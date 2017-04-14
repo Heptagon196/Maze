@@ -192,7 +192,7 @@ void SaveMap(Map* m) {
             else if (exits[i][j][0])
                 fout << "Exit " << i << ' ' << j << endl;
             else if (msg[i][j][0]!="")
-                fout << "Msg " << i << ' ' << j << msg[i][j][0] << endl;
+                fout << "Msg " << i << ' ' << j << ' ' << msg[i][j][0] << endl;
             else if (door[i][j][0]!=Door(0, 0, 0))
                 fout << "Key " << i << ' ' << j << ' ' << door[i][j][0].x << ' ' << door[i][j][0].y << endl;
     fout.close();
@@ -236,7 +236,7 @@ int main(int argc, char **argv) {
                 gotoxy(1, 21);
                 printf("Input a string: ");
                 string s;
-                getline(cin, s, '\n');
+                cin >> s;
                 msg[m->locx][m->locy][m->locz]=s;
             } else if (num==3) {
                 gotoxy(1, 21);
