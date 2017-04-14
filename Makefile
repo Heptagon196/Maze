@@ -1,0 +1,2 @@
+compile:
+	cd src&&make
