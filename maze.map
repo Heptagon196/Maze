@@ -1,9 +1,11 @@
 Wall 1 2
 Wall 2 2
 Wall 2 3
+Msg 3 1 门开了
 Key 3 1 4 1
 Wall 3 2
-Msg 3 3这里什么都没有
+Msg 3 3 这里什么都没有
 Key 3 4 4 1
+Wall 4 1
 Wall 4 2
 Key 5 1 4 1

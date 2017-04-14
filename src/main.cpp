@@ -186,19 +186,24 @@ void SaveMap(Map* m) {
     fstream fout;
     fout.open("maze.map");
     for (int i=1;i<=20;i++)
-        for (int j=1;j<=40;j++)
+        for (int j=1;j<=40;j++) {
             if (m->fl[0].Get(i, j)==&Wall)
                 fout << "Wall " << i << ' ' << j << endl;
-            else if (exits[i][j][0])
+            if (exits[i][j][0])
                 fout << "Exit " << i << ' ' << j << endl;
-            else if (msg[i][j][0]!="")
+            if (msg[i][j][0]!="")
                 fout << "Msg " << i << ' ' << j << ' ' << msg[i][j][0] << endl;
-            else if (door[i][j][0]!=Door(0, 0, 0))
+            if (door[i][j][0]!=Door(0, 0, 0))
                 fout << "Key " << i << ' ' << j << ' ' << door[i][j][0].x << ' ' << door[i][j][0].y << endl;
+        }
     fout.close();
 }
 
 int main(int argc, char **argv) {
+#ifndef linux
+    system("mode con lines=40");
+    system("mode con cols=90");
+#endif
     dark=(argc==1);
     gotoxy(1, 1);
     hidecursor();
