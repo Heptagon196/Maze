@@ -24,6 +24,7 @@
 *.lib
 
 # Executables
+Maze
 *.exe
 *.out
 *.app
