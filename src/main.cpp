@@ -12,28 +12,7 @@ BlockType Player(BLACK, YELLOW, "  ");
 
 bool dark=false;
 void SaveMap(Map* m);
-void Exit(Map *m = NULL) {
-    unhidecursor();
-    if (!dark)
-        SaveMap(m);
-    exit(0);
-}
-
-void ClearText() {
-    double x=pro_time();
-    while (pro_time()-x<10) ;
-    gotoxy(1, 21);
-    color(BLACK, WHITE);
-    for (int i=0;i<80;i++)
-        putchar(' ');
-}
-
-void DoNothing() {
-    gotoxy(1, 21);
-    color(BLACK, WHITE);
-    for (int i=0;i<80;i++)
-        putchar(' ');
-}
+void Exit(Map *m = NULL);
 
 map<int, function<void(Map *m)> > Keys;
 void Config() {
@@ -95,13 +74,15 @@ void RefreshChar(Map *m) {
         msg[m->locx][m->locy].find(m->locz)!=msg[m->locx][m->locy].end())
         Msg(m);
     m->fl[m->locz].Show(bakx, baky);
+    if (bakx<m->locx) {
+    }
     bakx=m->locx;
     baky=m->locy;
     bakz=m->locz;
     if (dark)
         for (int i=bakx-3;i<=bakx+3;i++)
             for (int j=baky-3;j<=baky+3;j++) {
-                if (i<1 || i>40 || j<1 || j>20)
+                if (i<1 || i>40 || j<1 || j>20 || (i==bakx && j==baky))
                     continue;
                 if (i==bakx-3 || i==bakx+3 || j==baky-3 || j==baky+3) {
                     gotoxy(i, j);
@@ -158,7 +139,7 @@ void ReadMap(Map* m) {
         } else if (com=="Msg") {
             fin >> x >> y;
             getline(fin, para, '\n');
-            msg[x][y][0]=para;
+            msg[x][y][0]=para.substr(1, para.length()-1);
         } else if (com=="Key") {
             int x2, y2;
             fin >> x >> y >> x2 >> y2;
@@ -186,6 +167,17 @@ void SaveMap(Map* m) {
                 fout << "Key " << i << ' ' << j << ' ' << door[i][j][0].x << ' ' << door[i][j][0].y << endl;
         }
     fout.close();
+}
+
+void Exit(Map *m) {
+    unhidecursor();
+    if (!dark)
+        SaveMap(m);
+    clearcolor();
+    clear();
+    if (msg[m->locx][m->locy][m->locz]!="")
+        cout << msg[m->locx][m->locy][m->locz] << endl;
+    exit(0);
 }
 
 int main(int argc, char **argv) {
@@ -217,7 +209,7 @@ int main(int argc, char **argv) {
             gotoxy(1, 21);
             printf("BlockType(0: empty 1: wall 2: leave message 3: door control): ");
             int num;
-            scanf("%d", &num);
+            num=getch()-'0';
             if (num==0)
                 m->fl[m->locz].Set(m->locx, m->locy, &Empty);
             else if (num==1)
@@ -229,7 +221,11 @@ int main(int argc, char **argv) {
                 gotoxy(1, 21);
                 printf("Input a string: ");
                 string s;
-                cin >> s;
+                unhidecursor();
+                char ch=0;
+                while ((ch=getchar())!='\n')
+                    s.push_back(ch);
+                hidecursor();
                 msg[m->locx][m->locy][m->locz]=s;
             } else if (num==3) {
                 gotoxy(1, 21);
