@@ -1,7 +1,7 @@
 #ifndef CONIOPLUS_H
 #define CONIOPLUS_H
 
-#ifdef linux
+#if defined(linux) || defined(__APPLE__)
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
