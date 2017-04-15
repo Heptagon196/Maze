@@ -10,16 +10,10 @@ BlockType Wall(BLACK, BLUE, "  ");
 BlockType Stair(BLACK, RED, "  ");
 BlockType Player(BLACK, YELLOW, "  ");
 
-thread th;
-bool joined=false;
-bool willexit=false;
 bool dark=false;
 void SaveMap(Map* m);
 void Exit(Map *m = NULL) {
     unhidecursor();
-    willexit=true;
-    if (th.joinable())
-        th.join();
     if (!dark)
         SaveMap(m);
     exit(0);
@@ -27,12 +21,11 @@ void Exit(Map *m = NULL) {
 
 void ClearText() {
     double x=pro_time();
-    while (pro_time()-x<10 && !willexit) ;
+    while (pro_time()-x<10) ;
     gotoxy(1, 21);
     color(BLACK, WHITE);
     for (int i=0;i<80;i++)
         putchar(' ');
-    joined=false;
 }
 
 void DoNothing() {
@@ -127,11 +120,6 @@ void Msg(Map *m) {
         putchar(' ');
     gotoxy(1, 21);
     cout << msg[m->locx][m->locy][m->locz];
-    if (joined)
-        return ;
-    th.join();
-    th=thread(ClearText);
-    joined=true;
 }
 
 struct Door {
@@ -168,7 +156,8 @@ void ReadMap(Map* m) {
             events[x][y][0]=Exit;
             exits[x][y][0]=1;
         } else if (com=="Msg") {
-            fin >> x >> y >> para;
+            fin >> x >> y;
+            getline(fin, para, '\n');
             msg[x][y][0]=para;
         } else if (com=="Key") {
             int x2, y2;
@@ -219,7 +208,6 @@ int main(int argc, char **argv) {
     else
         m.fl[0].Init();
     RefreshChar(&m);
-    th=thread(DoNothing);
     m.Connect(Kbhit, Read);
     m.Connect(LocationChanged, RefreshChar);
     if (dark)

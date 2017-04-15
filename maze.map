@@ -1,10 +1,10 @@
 Wall 1 2
 Wall 2 2
 Wall 2 3
-Msg 3 1 门开了
+Msg 3 1 The door opened
 Key 3 1 4 1
 Wall 3 2
-Msg 3 3 这里什么都没有
+Msg 3 3 There's nothing
 Key 3 4 4 1
 Wall 4 1
 Wall 4 2
