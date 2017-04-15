@@ -202,7 +202,7 @@ static string colorname(int x) {
     return "none";
 }
 
-static int getcolorr(string x) {
+static int getcolor(string x) {
     if (x=="black")
         return BLACK;
     if (x=="blue")
