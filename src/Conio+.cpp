@@ -1,6 +1,3 @@
-#ifndef CONIOPLUS_H
-#define CONIOPLUS_H
-
 #if defined(linux) || defined(__APPLE__)
 #include <termios.h>
 #include <unistd.h>
@@ -138,19 +135,19 @@ void unhidecursor() {
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE),&cursor_info);
 }
 
-int color(int a,int b)
+void color(int a,int b)
 {
-	if ((a>15)||(b>15)) return -1;
+	if (a>15||b>15)
+        return ;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),on_(a,b));
-	return on_(a,b);
 }
 
-int foreground(int a) {
-    return color(a, BLACK);
+void foreground(int a) {
+    color(a, BLACK);
 }
 
-int background(int a) {
-    return color(WHITE, a);
+void background(int a) {
+    color(WHITE, a);
 }
 
 void clearcolor() {
@@ -216,4 +213,3 @@ int getcolor(string x) {
         return WHITE;
     return -1;
 }
-#endif

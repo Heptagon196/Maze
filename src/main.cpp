@@ -2,7 +2,6 @@
 #include "Map.h"
 #include <fstream>
 #include <map>
-#include <thread>
 
 int Key_Up, Key_Down, Key_Left, Key_Right, Key_Quit;
 BlockType Empty(BLACK, WHITE, "  ");
