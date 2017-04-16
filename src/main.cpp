@@ -151,6 +151,7 @@ void ReadMap(Map* m) {
 }
 
 Map* bakup;
+
 void SaveMap(Map* m) {
     m=bakup;
     fstream fout;
@@ -170,12 +171,14 @@ void SaveMap(Map* m) {
 }
 
 void Exit(Map *m) {
+    if (m==NULL)
+        m=bakup;
     unhidecursor();
     if (!dark)
         SaveMap(m);
     clearcolor();
     clear();
-    if (msg[m->locx][m->locy][m->locz]!="")
+    if (msg[m->locx][m->locy][m->locz]!="" && exits[m->locx][m->locy][m->locz])
         cout << msg[m->locx][m->locy][m->locz] << endl;
     exit(0);
 }

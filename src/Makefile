@@ -9,4 +9,4 @@ Conio.o:
 clean:
 	rm *.o
 debug:
-	$(CC) Map.o main.cpp -o ../Maze -g $(FLAGS)
+	$(CC) Map.o Conio.o main.cpp -o ../Maze -g $(FLAGS)
