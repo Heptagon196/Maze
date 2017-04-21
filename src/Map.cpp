@@ -58,7 +58,7 @@ void Floor::Rever(int x, int y) {
 }
 
 //Map
-void Map::Connect(function<bool(Map*)> check, function<void(Map*)> exec) {
+void Map::Connect(function<bool(Map*)> check, vector<function<void(Map*)> > exec) {
     p.push_back(make_pair(check, exec));
 }
 
@@ -66,5 +66,6 @@ void Map::Exec() {
     while (true)
         for (int i=0;i<p.size();i++)
             if (p[i].first(this))
-                p[i].second(this);
+                for (int j=0;j<p[i].second.size();j++)
+                    p[i].second[j](this);
 }

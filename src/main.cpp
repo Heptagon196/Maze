@@ -154,9 +154,9 @@ Map* bakup;
 void SaveMap(Map* m) {
     m=bakup;
     fstream fout;
-    fout.open("maze.map");
-    for (int i=1;i<=20;i++)
-        for (int j=1;j<=40;j++) {
+    fout.open("maze.map", ios::out);
+    for (int i=1;i<=40;i++)
+        for (int j=1;j<=20;j++) {
             if (m->fl[0].Get(i, j)==&Wall)
                 fout << "Wall " << i << ' ' << j << endl;
             if (exits[i][j][0])
@@ -170,16 +170,32 @@ void SaveMap(Map* m) {
 }
 
 void Exit(Map *m) {
+    if (!dark) {
+        SaveMap(bakup);
+        if (m!=NULL)
+            return ;
+    }
+    unhidecursor();
     if (m==NULL)
         m=bakup;
-    unhidecursor();
-    if (!dark)
-        SaveMap(m);
     clearcolor();
     clear();
     if (msg[m->locx][m->locy][m->locz]!="" && exits[m->locx][m->locy][m->locz])
         cout << msg[m->locx][m->locy][m->locz] << endl;
+    puts("\nPress any key to exit...");
+    getch();
     exit(0);
+}
+
+void StatusBar(Map *m) {
+    if (dark)
+        return ;
+    gotoxy(1, 22);
+    Empty.Show();
+    for (int i=0;i<13;i++)
+        putchar(' ');
+    gotoxy(1, 22);
+    printf("Location: %d %d\n", m->locx, m->locy);
 }
 
 int main(int argc, char **argv) {
@@ -202,8 +218,9 @@ int main(int argc, char **argv) {
     else
         m.fl[0].Init();
     RefreshChar(&m);
-    m.Connect(Kbhit, Read);
-    m.Connect(LocationChanged, RefreshChar);
+    typedef vector<function<void(Map* m)> > F;
+    m.Connect(Kbhit, (F){Read});
+    m.Connect(LocationChanged, (F){RefreshChar, StatusBar});
     if (dark)
         m.Exec();
     else {
