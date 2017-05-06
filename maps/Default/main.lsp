@@ -5,18 +5,18 @@
     (event 1 2
         (print "The exit is at the south-east corner.")
     )
-    (event 9 17
-        (if (! (can-cross 38 19))
+    (event 1 15
+        (if (== (get 39 18) Wall)
             (print "You found a key in the corner!")
-            (set 38 19 Empty)
+            (set 39 18 Empty)
         )
     )
-    (event 37 19
-        (if (== (get 38 19) Wall)
+    (event 39 17
+        (if (== (get 39 18) Wall)
             (print "The way is blocked! The key is near the south-west corner.")
         )
     )
-    (event 40 20
+    (event 40 19
         (print "You escaped from the maze! Press any key to exit.")
         (getch)
         (exit)
