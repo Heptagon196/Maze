@@ -8,12 +8,6 @@
 #include "Map.h"
 #include "Cal.h"
 #include "InterpreterExt.h"
-#if defined(linux) || defined(__APPLE__)
-#else
-void chdir(const char *str) {
-    system(("cd "+(string)str).c_str());
-}
-#endif
 
 Map Main;
 Interpreter exec;
@@ -23,6 +17,7 @@ BlockType Null(BLACK, WHITE, "  ");
 BlockType Wall(BLACK, BLUE, "  ");
 BlockType Stair(BLACK, RED, "  ");
 BlockType Player(BLACK, YELLOW, "  ");
+string MapName;
 
 void Exit(Map *m = NULL) {
     m=&Main;
@@ -71,7 +66,7 @@ Def(Source) {
     ifstream fin;
     string com;
     int x, y;
-    fin.open(t);
+    fin.open("maps/"+MapName+"/"+t);
     if (fin)
         while (fin >> x >> y)
             Main.fl[0].Set(x, y, &Wall);
@@ -135,17 +130,13 @@ void Init() {
 int Cal(int argc, char **argv) {
     hidecursor();
     ifstream fin;
-    string MapName;
     fin.open("maze.config");
     fin >> MapName;
     fin.close();
     Init();
     fin.open("maps/"+MapName+"/maze.main");
-    if (fin) {
-        chdir(("maps/"+MapName).c_str());
+    if (fin)
         exec.Exec(fin);
-        chdir("../../");
-    }
     fin.close();
     gotoxy(1, 1);
     Main.fl[0].Init();
