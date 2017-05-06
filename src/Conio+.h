@@ -32,8 +32,6 @@ int getch(void);
 #include <iostream>
 #include <fstream>
 #include <string>
-#define HighLight()
-#define ClearColor()
 using namespace std;
 #define BLACK 8
 #define BLUE 9

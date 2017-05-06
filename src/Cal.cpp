@@ -8,6 +8,12 @@
 #include "Map.h"
 #include "Cal.h"
 #include "InterpreterExt.h"
+#if defined(linux) || defined(__APPLE__)
+#else
+void chdir(const char *str) {
+    system(("cd "+(string)str).c_str());
+}
+#endif
 
 Map Main;
 Interpreter exec;
