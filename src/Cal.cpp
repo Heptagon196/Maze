@@ -13,11 +13,14 @@ Map Main;
 Interpreter exec;
 map<int, function<void(Map *m)> > Keys;
 map<int, map<int, string> > Events;
-BlockType Null(BLACK, WHITE, "  ");
-BlockType Wall(BLACK, BLUE, "  ");
-BlockType Stair(BLACK, RED, "  ");
+BlockType Null(BLACK, WHITE, "  ", true, 0);
+BlockType Wall(BLACK, BLUE, "  ", false, 1);
+BlockType Stair(BLACK, RED, "  ", true, 2);
 BlockType Player(BLACK, YELLOW, "  ");
+map<string, BlockType> UserType;
 string MapName;
+vector<BlockType*> BlockArray={&Null, &Wall, &Stair};
+map<int, string> UserKeys;
 
 void Exit(Map *m = NULL) {
     m=&Main;
@@ -34,11 +37,18 @@ void KeyPress(Map *m) {
         return ;
     char ch=getch();
     int bakx=m->locx, baky=m->locy;
+    string tmp;
     if (Keys.find(ch)!=Keys.end())
         Keys[ch](m);
+    if ((tmp=UserKeys[ch])!="") {
+        stringstream ss;
+        ss.str("");
+        ss << tmp;
+        exec.Exec(ss);
+    }
     if (m->locx!=bakx || m->locy!=baky) {
         if (m->locx < 1 || m->locx > 40 || m->locy < 1 || m->locy > 20 || m->locz < 0 || m->locz >= m->fl.size() ||
-            (m->fl[m->locz].Get(m->locx, m->locy)==&Wall)) {
+            (!m->fl[m->locz].Get(m->locx, m->locy)->crossable)) {
             m->locx=bakx;
             m->locy=baky;
         }
@@ -46,7 +56,6 @@ void KeyPress(Map *m) {
             m->fl[m->locz].Show(bakx, baky);
             gotoxy(m->locx, m->locy);
             Player.Show();
-            string tmp;
             if ((tmp=Events[m->locx][m->locy])!="") {
                 stringstream ss;
                 ss.str("");
@@ -61,15 +70,20 @@ void KeyPress(Map *m) {
 #define GetInt(x, y) if (para[x].first==REFER) y=p->Int[para[x].second]; else y=Transfer(para[x].second);
 
 Def(Source) {
+    int i;
     string t;
-    GetStr(0, t);
+    GetInt(0, i);
+    GetStr(1, t);
     ifstream fin;
     string com;
     int x, y;
-    fin.open("maps/"+MapName+"/"+t);
+    if (t[0]!='.')
+        fin.open("maps/"+MapName+"/"+t);
+    else
+        fin.open(t);
     if (fin)
         while (fin >> x >> y)
-            Main.fl[0].Set(x, y, &Wall);
+            Main.fl[0].Set(x, y, BlockArray[i]);
     fin.close();
     return Empty;
 }
@@ -85,16 +99,13 @@ Def(AddEvent) {
     s+=")";
     return Empty;
 }
-BlockType* BlockArray[]={&Null, &Wall};
-#define BLOCK_EMPTY 0
-#define BLOCK_WALL 1
 
 Def(SetBlock) {
     int a, b, c;
     GetInt(0, a);
     GetInt(1, b);
     GetInt(2, c);
-    if (c<2)
+    if (c<BlockArray.size())
         Main.fl[0].Set(a, b, BlockArray[c]);
     Main.fl[0].Show(a, b);
     return Empty;
@@ -105,7 +116,55 @@ Def(GetBlock) {
     GetInt(0, a);
     GetInt(1, b);
     BlockType* t=Main.fl[0].Get(a, b);
-    return ParaList(1, Pair(INTE, (t==&Wall)?"1":"0"));
+    return ParaList(1, Pair(INTE, Transfer(t->id)));
+}
+
+Def(Crossable) {
+    int a, b;
+    GetInt(0, a);
+    GetInt(1, b);
+    BlockType* t=Main.fl[0].Get(a, b);
+    return ParaList(1, Pair(INTE, Transfer(t->crossable)));
+}
+
+Def(DefBlock) {
+    int fg, bg, cross;
+    string ch, name;
+    GetInt(1, fg);
+    GetInt(2, bg);
+    GetStr(3, ch);
+    GetInt(4, cross);
+    exec.AddVar(para[0].second, BlockArray.size());
+    UserType[name]=BlockType(fg, bg, ch, cross, BlockArray.size());
+    BlockArray.push_back(&UserType[name]);
+    return Empty;
+}
+
+Def(AddKey) {
+    string ch;
+    GetStr(0, ch);
+    string &s=UserKeys[ch[0]];
+    s="(main ";
+    for (int i=1;i<para.size();i++)
+        s+=para[i].second+" ";
+    s+=")";
+    return Empty;
+}
+
+Def(GetX) {
+    return ParaList(1, Pair(INTE, Transfer(Main.locx)));
+}
+
+Def(GetY) {
+    return ParaList(1, Pair(INTE, Transfer(Main.locy)));
+}
+
+Def(Refresh) {
+    gotoxy(1, 1);
+    Main.fl[0].Init();
+    gotoxy(Main.locx, Main.locy);
+    Player.Show();
+    return Empty;
 }
 
 void Init() {
@@ -119,12 +178,19 @@ void Init() {
     Main.Add(KeyPress);
 
     ImportExt(exec);
-    exec.AddVar("Empty", BLOCK_EMPTY);
-    exec.AddVar("Wall", BLOCK_WALL);
+    exec.AddVar("Empty", 0);
+    exec.AddVar("Wall", 1);
+    exec.AddVar("Stair", 2);
     exec.Add("source", Source);
     exec.Add("get", GetBlock);
     exec.Add("set", SetBlock);
+    exec.Add("def", DefBlock);
+    exec.Add("can-cross", Crossable);
+    exec.Add("locx", GetX);
+    exec.Add("locy", GetY);
+    exec.Add("refresh", Refresh);
     exec.AddPreserved("event", AddEvent);
+    exec.AddPreserved("key", AddKey);
 }
 
 int Cal(int argc, char **argv) {
@@ -134,7 +200,7 @@ int Cal(int argc, char **argv) {
     fin >> MapName;
     fin.close();
     Init();
-    fin.open("maps/"+MapName+"/maze.main");
+    fin.open("maps/"+MapName+"/main.lsp");
     if (fin)
         exec.Exec(fin);
     fin.close();

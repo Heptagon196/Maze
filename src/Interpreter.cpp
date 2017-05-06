@@ -25,7 +25,6 @@ typedef vector<Pair> ParaList;
 class Interpreter;
 typedef function<ParaList(Interpreter*, ParaList)> Function;
 #define Def(x) ParaList x (Interpreter* p, ParaList para)
-ifstream scriptin;
 
 void Puts(string s) {
     if (s=="") {
@@ -219,11 +218,13 @@ ParaList Interpreter::Exec(istream &fin) {
 }
 
 Def(print) {
-    gotoxy(1, 21);
-    color(BLACK, WHITE);
-    for (int i=0;i<80;i++)
-        putchar(' ');
-    gotoxy(1, 21);
+    if (cout.rdbuf()==OutBuf) {
+        gotoxy(1, 21);
+        color(BLACK, WHITE);
+        for (int i=0;i<80;i++)
+            putchar(' ');
+        gotoxy(1, 21);
+    }
     for (int i=0;i<para.size();i++)
         if (para[i].first==INTE)
             cout << para[i].second;
@@ -251,7 +252,7 @@ int ReferType(Interpreter* p, Pair x) {
 
 Def(println) {
     print(p, para);
-    putchar('\n');
+    cout << '\n';
     return Empty;
 }
 

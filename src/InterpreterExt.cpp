@@ -1,5 +1,8 @@
 #include "Interpreter.h"
 #include "Conio+.h"
+#define GetStr(x, y) if (para[x].first==REFER) y=p->Str[para[x].second]; else y=para[x].second.substr(1, para[x].second.length()-2);
+#define GetInt(x, y) if (para[x].first==REFER) y=p->Int[para[x].second]; else y=Transfer(para[x].second);
+
 Def(Kbhit) {
     if (kbhit())
         return True;
@@ -84,7 +87,40 @@ Def(Random) {
     return ParaList(1, Pair(INTE, Transfer(rand()%(a[1]-a[0]+1)+a[0])));
 }
 
+ifstream fin;
+ofstream fout;
+Def(ReadFrom) {
+    string file;
+    GetStr(0, file);
+    if (file=="/dev/stdin") {
+        fin.close();
+        cin.rdbuf(InBuf);
+        return True;
+    }
+    fin.open(file);
+    if (!fin)
+        return False;
+    cin.rdbuf(fin.rdbuf());
+    return True;
+}
+
+Def(PrintTo) {
+    string file;
+    GetStr(0, file);
+    if (file=="/dev/stdout") {
+        fout.close();
+        cout.rdbuf(OutBuf);
+        return True;
+    }
+    fout.open(file);
+    if (!fout)
+        return False;
+    cout.rdbuf(fout.rdbuf());
+    return True;
+}
+
 void ImportExt(Interpreter &s) {
+#if defined(linux) || defined(__APPLE__)
     s.AddVar("black", 0);
     s.AddVar("blue", 4);
     s.AddVar("green", 6);
@@ -93,6 +129,16 @@ void ImportExt(Interpreter &s) {
     s.AddVar("purple", 5);
     s.AddVar("yellow", 3);
     s.AddVar("white", 7);
+#else
+    s.AddVar("black", 8);
+    s.AddVar("blue", 9);
+    s.AddVar("green", 10);
+    s.AddVar("cyan", 11);
+    s.AddVar("red", 12);
+    s.AddVar("purple", 13);
+    s.AddVar("yellow", 14);
+    s.AddVar("white", 15);
+#endif
     s.Add("getch", Getch);
     s.Add("readkey", Readkey);
     s.Add("kbhit", Kbhit);
@@ -104,5 +150,7 @@ void ImportExt(Interpreter &s) {
     s.Add("clear", Clear);
     s.Add("system", Bash);
     s.Add("random", Random);
+    s.Add("printto", PrintTo);
+    s.Add("readfrom", ReadFrom);
 }
 

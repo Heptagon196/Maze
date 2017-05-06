@@ -26,6 +26,8 @@ typedef function<ParaList(Interpreter*, ParaList)> Function;
 int Transfer(string str);
 string Transfer(int integer);
 int ReferType(Interpreter* p, Pair x);
+static streambuf* OutBuf = cout.rdbuf();
+static streambuf* InBuf = cin.rdbuf();
 
 const ParaList Empty=ParaList(0);
 const ParaList True=ParaList(1, Pair(INTE, "1"));

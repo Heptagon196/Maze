@@ -8,7 +8,12 @@ class BlockType {
         int fg, bg;
         string text;
     public:
+        int crossable=1;
+        int id;
+        BlockType() {}
         BlockType(int fg, int bg, string text): fg(fg), bg(bg), text(text) {}
+        BlockType(int fg, int bg, string text, int crossable): fg(fg), bg(bg), text(text), crossable(crossable) {}
+        BlockType(int fg, int bg, string text, int crossable, int id): fg(fg), bg(bg), text(text), crossable(crossable), id(id) {}
         void Show();
         void Rever();
 };
