@@ -76,6 +76,16 @@ void Format(string &s, int x, int n) {
     Format(s, Transfer(x), n);
 }
 
+void Format(string &s) {
+    string f="\\n";
+    int pos;
+    pos=s.find(f);
+    while (pos!=-1) {
+        s.replace(pos, f.length(), "\n");
+        pos=s.find(f);
+    }
+}
+
 int ReferType(Interpreter* p, Pair x);
 
 Def(print);
@@ -218,7 +228,7 @@ ParaList Interpreter::Exec(istream &fin) {
 }
 
 Def(print) {
-    if (cout.rdbuf()==OutBuf) {
+    if (cout.rdbuf()==OutBuf && p->Int["OUTPUT_TO_THE_BOTTOM"]==0) {
         gotoxy(1, 21);
         color(BLACK, WHITE);
         for (int i=0;i<80;i++)
@@ -536,6 +546,10 @@ Def(Formater) {
         target=p->Str[para[0].second];
     else if (para[0].first==STR)
         target=para[0].second.substr(1, para[0].second.length()-2);
+    if (para.size()<=1) {
+        Format(target);
+        return ParaList(1, Pair(STR, target));
+    }
     for (int i=1;i<para.size();i++) {
         if (para[i].first==REFER) {
             if (ReferType(p, para[i])==INTE)
@@ -551,6 +565,10 @@ Def(Formater) {
 }
 
 Interpreter::Interpreter() {
+    Str["CR"]="\r";
+    type["CR"]=STR;
+    Str["ENTER"]="\n";
+    type["ENTER"]=STR;
     Add("true", Bool_True);
     Add("false", Bool_False);
     AddVar("true", 1);

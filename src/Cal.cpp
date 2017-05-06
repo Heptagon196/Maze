@@ -159,11 +159,10 @@ Def(GetY) {
     return ParaList(1, Pair(INTE, Transfer(Main.locy)));
 }
 
-Def(Refresh) {
-    gotoxy(1, 1);
-    Main.fl[0].Init();
-    gotoxy(Main.locx, Main.locy);
-    Player.Show();
+Def(ChangeMap) {
+    string s;
+    GetStr(0, s);
+    MapName=s;
     return Empty;
 }
 
@@ -188,7 +187,7 @@ void Init() {
     exec.Add("can-cross", Crossable);
     exec.Add("locx", GetX);
     exec.Add("locy", GetY);
-    exec.Add("refresh", Refresh);
+    exec.Add("changemap", ChangeMap);
     exec.AddPreserved("event", AddEvent);
     exec.AddPreserved("key", AddKey);
 }
