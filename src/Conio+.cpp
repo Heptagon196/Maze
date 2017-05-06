@@ -60,6 +60,10 @@ void gotoxy(int x,int y) {
 	printf("\033[%d;%dH",y,2*x-1);
 }
 
+void gotoxy_origin(int x,int y) {
+	printf("\033[%d;%dH",y,x);
+}
+
 void hidecursor() {
 	printf("\033[?25l");
 }
@@ -119,6 +123,13 @@ using namespace std;
 
 void gotoxy(int x,int y) {
     x=2*x-1;
+	COORD c;
+	c.X=x-1;
+	c.Y=y-1;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
+}
+
+void gotoxy_origin(int x,int y) {
 	COORD c;
 	c.X=x-1;
 	c.Y=y-1;

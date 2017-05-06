@@ -31,8 +31,8 @@ class Map {
         vector<Floor> fl;
         int locx, locy, locz;
 
-        vector<pair<function<bool(Map*)>, vector<function<void(Map*)> > > > p;
-        void Connect(function<bool(Map*)> check, vector<function<void(Map*)> > exec);
+        vector<function<void(Map*)> > p;
+        void Add(function<void(Map*)> func);
         Floor& operator [](int i) {
             return fl[i];
         }

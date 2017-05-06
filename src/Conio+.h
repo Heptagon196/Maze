@@ -47,6 +47,7 @@ using namespace std;
 #endif
 
 void gotoxy(int x,int y);
+void gotoxy_origin(int x,int y);
 void hidecursor();
 void unhidecursor();
 void color(int a,int b);
