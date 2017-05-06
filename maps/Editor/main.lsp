@@ -37,7 +37,6 @@
             )
         )
         (printto "/dev/stdout")
-        (refresh)
         (print "Map saved!")
     )
 )
