@@ -26,11 +26,29 @@ class Interpreter;
 typedef function<ParaList(Interpreter*, ParaList)> Function;
 #define Def(x) ParaList x (Interpreter* p, ParaList para)
 
+#if defined(linux) || defined(__APPLE__)
+ #define UTF8ToGBK(x) (x)
+#else
+string UTF8ToGBK(string str) {
+	const char * strUTF8 = str.c_str();
+    int len = MultiByteToWideChar(CP_UTF8, 0, strUTF8, -1, NULL, 0);
+    wchar_t* wszGBK = new wchar_t[len+1];
+    memset(wszGBK, 0, len*2+2);
+    MultiByteToWideChar(CP_UTF8, 0, strUTF8, -1, wszGBK, len);
+    len = WideCharToMultiByte(CP_ACP, 0, wszGBK, -1, NULL, 0, NULL, NULL);
+    char* szGBK = new char[len+1];
+    memset(szGBK, 0, len+1);
+    WideCharToMultiByte(CP_ACP, 0, wszGBK, -1, szGBK, len, NULL, NULL);
+    string strTemp(szGBK);
+    if(wszGBK) delete[] wszGBK;
+    if(szGBK) delete[] szGBK;
+    return strTemp;
+}
+#endif
+
 void Puts(string s) {
-    if (s=="") {
-        cout << s;
+    if (s=="")
         return ;
-    }
     for (int i=0;i<s.length()-1;i++)
         if (s[i]=='\\') {
             if (s[i+1]=='n')
@@ -38,7 +56,7 @@ void Puts(string s) {
             else
                 s.replace(i, 2, s.substr(i+1, 1).c_str());
         }
-    cout << s;
+    cout << UTF8ToGBK(s);
 }
 
 int Transfer(string str) {
