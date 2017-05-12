@@ -193,6 +193,6 @@ void ImportExt(Interpreter &s) {
     s.Add("printto", PrintTo);
     s.Add("readfrom", ReadFrom);
     s.Add("printmid", PrintMid);
-    s.Add("exec", Exec);
+    s.Add("source", Exec);
 }
 

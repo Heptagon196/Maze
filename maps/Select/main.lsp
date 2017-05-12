@@ -63,5 +63,5 @@
     ;修改Cal.cpp中的全局变量MapName
     (changemap s[line])
     ;调用脚本
-    (exec (+ (+ "maps/" s[line]) "/main.lsp"))
+    (source (+ (+ "maps/" s[line]) "/main.lsp"))
 )

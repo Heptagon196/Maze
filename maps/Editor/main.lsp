@@ -17,7 +17,7 @@
         (exit)
     )
     ;读入name文件中的坐标，这些坐标的类型被设置为NewWall
-    (source NewWall name)
+    (set NewWall name)
     (print "Press r to change the block, press e to save the map.")
     ;定义按下r时的行为
     (key "r"

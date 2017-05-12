@@ -101,14 +101,17 @@ Def(AddEvent) {
 }
 
 Def(SetBlock) {
-    int a, b, c;
-    GetInt(0, a);
-    GetInt(1, b);
-    GetInt(2, c);
-    if (c<BlockArray.size())
-        Main.fl[0].Set(a, b, BlockArray[c]);
-    Main.fl[0].Show(a, b);
-    return Empty;
+    if (para.size()==3) {
+        int a, b, c;
+        GetInt(0, a);
+        GetInt(1, b);
+        GetInt(2, c);
+        if (c<BlockArray.size())
+            Main.fl[0].Set(a, b, BlockArray[c]);
+        Main.fl[0].Show(a, b);
+        return Empty;
+    } else
+        return Source(p, para);
 }
 
 Def(GetBlock) {
@@ -180,7 +183,6 @@ void Init() {
     exec.AddVar("Empty", 0);
     exec.AddVar("Wall", 1);
     exec.AddVar("Stair", 2);
-    exec.Add("source", Source);
     exec.Add("get", GetBlock);
     exec.Add("set", SetBlock);
     exec.Add("def", DefBlock);
