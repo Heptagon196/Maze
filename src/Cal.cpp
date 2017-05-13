@@ -231,23 +231,39 @@ void Init() {
     exec.Add("changemap", ChangeMap);
     exec.AddPreserved("event", AddEvent);
     exec.AddPreserved("key", AddKey);
-    exec.AddVar("method", 0);
-    exec.AddVar("horizon", 2);
+    exec.AddVar("method", -32000);
+    exec.AddVar("horizon", -32000);
 }
 
 int Cal(int argc, char **argv) {
     hidecursor();
     ifstream fin;
-    fin.open("maze.config");
-    fin >> MapName;
+    fin.open("config.lsp");
+    MapName="Default";
+    if (fin) {
+        Interpreter config;
+        ImportExt(config);
+        config.AddVar("method", -32000);
+        config.AddVar("horizon", -32000);
+        config.type["MapName"]=STR;
+        config.Exec(fin);
+        if (config.Str["MapName"]!="")
+            MapName=config.Str["MapName"];
+        if (config.Int["method"]!=-32000)
+            print=config.Int["method"];
+        if (config.Int["horizon"]!=-32000)
+            horizon=config.Int["horizon"];
+    }
     fin.close();
     Init();
     fin.open("maps/"+MapName+"/main.lsp");
     if (fin)
         exec.Exec(fin);
     fin.close();
-    print=exec.Int["method"];
-    horizon=exec.Int["horizon"];
+    if (exec.Int["method"]!=-32000)
+        print=exec.Int["method"];
+    if (exec.Int["horizon"]!=-32000)
+        horizon=exec.Int["horizon"];
     if (print == PRINT_EXPLORE || print == PRINT_TORCH)
         for (int i=1;i<=horizon+1;i++)
             for (int j=1;j<=horizon+1;j++)
