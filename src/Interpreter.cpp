@@ -142,6 +142,10 @@ ParaList Interpreter::Exec(istream &fin) {
     int readstr=-1;
     while ((fin.read(&ch, 1)) && ch!=')' && ch!=' ' && ch!='\n')
         name.push_back(ch);
+    if (type[name]!=FUNC) {
+        cerr << "Illegal usage: (" << name << ")" << endl;
+        exit(1);
+    }
     if (Func.find(name)==Func.end() && name!="exit") {
         cerr << "Unknown function: " << name << endl;
         exit(1);
