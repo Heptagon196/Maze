@@ -12,7 +12,8 @@
 Map Main;
 Interpreter exec;
 map<int, function<void(Map *m)> > Keys;
-map<int, map<int, string> > Events;
+typedef string SingleEvent[45][45];
+map<int, SingleEvent> Events;
 BlockType Null(BLACK, WHITE, "  ", true, 0);
 BlockType Wall(BLACK, BLUE, "  ", false, 1);
 BlockType Stair(BLACK, RED, "  ", true, 2);
@@ -41,6 +42,57 @@ void Exit(Map *m = NULL) {
 }
 
 BlockType Dark(BLACK, BLACK, "  ");
+void LocationMoved(int bakx, int baky, Map *m) {
+    string tmp;
+    if (m->locx < 1 || m->locx > 40 || m->locy < 1 || m->locy > 20 || m->locz < 0 || m->locz >= m->fl.size() ||
+        (!m->fl[m->locz].Get(m->locx, m->locy)->crossable)) {
+        m->locx=bakx;
+        m->locy=baky;
+    }
+    if (m->locx!=bakx || m->locy!=baky) {
+        if (print == PRINT_OVERVIEW) {
+            m->fl[m->locz].Show(bakx, baky);
+            gotoxy(m->locx, m->locy);
+            Player.Show();
+        } else if (print == PRINT_EXPLORE) {
+            if (bakx>=m->locx-2 && bakx<=m->locx+2 && baky>=m->locy-2 && baky<=m->locy+2)
+                m->fl[m->locz].Show(bakx, baky);
+            gotoxy(m->locx, m->locy);
+            for (int i=m->locx-horizon;i<=m->locx+horizon;i++)
+                for (int j=m->locy-horizon;j<=m->locy+horizon;j++)
+                    if (!(i<1||i>40||j<1||j>20))
+                        if (!m->fl[m->locz].explored[i][j]) {
+                            m->fl[m->locz].explored[i][j]=1;
+                            m->fl[m->locz].Show(i, j);
+                        }
+            gotoxy(m->locx, m->locy);
+            Player.Show();
+        } else if (print == PRINT_TORCH) {
+            if (bakx>=m->locx-2 && bakx<=m->locx+2 && baky>=m->locy-2 && baky<=m->locy+2)
+                m->fl[m->locz].Show(bakx, baky);
+            for (int i=min(bakx, m->locx)-horizon;i<=max(bakx, m->locx)+horizon;i++)
+                for (int j=min(baky, m->locy)-horizon;j<=max(baky, m->locy)+horizon;j++)
+                    if (!(i<1||i>40||j<1||j>20)) {
+                        if ( (i>=m->locx-horizon && i<=m->locx+horizon && j>=m->locy-horizon && j<=m->locy+horizon) &&
+                            ((! (i>=bakx-horizon && i<=bakx+horizon && j>=baky-horizon && j<=baky+horizon))) ) {
+                            m->fl[m->locz].Show(i, j);
+                        } else if (! (i>=m->locx-horizon && i<=m->locx+horizon && j>=m->locy-horizon && j<=m->locy+horizon)){
+                            gotoxy(i, j);
+                            Dark.Show();
+                        }
+                    }
+            gotoxy(m->locx, m->locy);
+            Player.Show();
+        }
+        if ((tmp=Events[m->locz][m->locx][m->locy])!="") {
+            stringstream ss;
+            ss.str("");
+            ss << tmp;
+            exec.Exec(ss);
+        }
+    }
+}
+
 void KeyPress(Map *m) {
     if (!kbhit())
         return ;
@@ -55,53 +107,8 @@ void KeyPress(Map *m) {
         ss << tmp;
         exec.Exec(ss);
     }
-    if (m->locx!=bakx || m->locy!=baky) {
-        if (m->locx < 1 || m->locx > 40 || m->locy < 1 || m->locy > 20 || m->locz < 0 || m->locz >= m->fl.size() ||
-            (!m->fl[m->locz].Get(m->locx, m->locy)->crossable)) {
-            m->locx=bakx;
-            m->locy=baky;
-        }
-        if (m->locx!=bakx || m->locy!=baky) {
-            if (print == PRINT_OVERVIEW) {
-                m->fl[m->locz].Show(bakx, baky);
-                gotoxy(m->locx, m->locy);
-                Player.Show();
-            } else if (print == PRINT_EXPLORE) {
-                m->fl[m->locz].Show(bakx, baky);
-                gotoxy(m->locx, m->locy);
-                for (int i=m->locx-horizon;i<=m->locx+horizon;i++)
-                    for (int j=m->locy-horizon;j<=m->locy+horizon;j++)
-                        if (!(i<1||i>40||j<1||j>20))
-                            if (!m->fl[m->locz].explored[i][j]) {
-                                m->fl[m->locz].explored[i][j]=1;
-                                m->fl[m->locz].Show(i, j);
-                            }
-                gotoxy(m->locx, m->locy);
-                Player.Show();
-            } else if (print == PRINT_TORCH) {
-                m->fl[m->locz].Show(bakx, baky);
-                for (int i=min(bakx, m->locx)-horizon;i<=max(bakx, m->locx)+horizon;i++)
-                    for (int j=min(baky, m->locy)-horizon;j<=max(baky, m->locy)+horizon;j++)
-                        if (!(i<1||i>40||j<1||j>20)) {
-                            if ( (i>=m->locx-horizon && i<=m->locx+horizon && (! (i>=bakx-horizon && i<=bakx+horizon))) ||
-                                (j>=m->locy-horizon && j<=m->locy+horizon && (! (j>=baky-horizon && j<=baky+horizon))) )
-                                m->fl[m->locz].Show(i, j);
-                            else if (! (i>=m->locx-horizon && i<=m->locx+horizon && j>=m->locy-horizon && j<=m->locy+horizon)){
-                                gotoxy(i, j);
-                                Dark.Show();
-                            }
-                        }
-                gotoxy(m->locx, m->locy);
-                Player.Show();
-            }
-            if ((tmp=Events[m->locx][m->locy])!="") {
-                stringstream ss;
-                ss.str("");
-                ss << tmp;
-                exec.Exec(ss);
-            }
-        }
-    }
+    if (m->locx!=bakx || m->locy!=baky)
+        LocationMoved(bakx, baky, m);
 }
 
 #define GetStr(x, y) if (para[x].first==REFER) y=p->Str[para[x].second]; else y=para[x].second.substr(1, para[x].second.length()-2);
@@ -121,18 +128,31 @@ Def(Source) {
         fin.open(t);
     if (fin)
         while (fin >> x >> y)
-            Main.fl[0].Set(x, y, BlockArray[i]);
+            Main.fl[Main.locz].Set(x, y, BlockArray[i]);
     fin.close();
     return Empty;
 }
 
+bool isNumber(string s) {
+    for (int i=0;i<s.length();i++)
+        if (!isdigit(s[i]))
+            return false;
+    return true;
+}
+
 Def(AddEvent) {
-    int a, b;
+    int a, b, c;
     GetInt(0, a);
     GetInt(1, b);
-    string &s=Events[a][b];
+    int i=2;
+    if (isNumber(para[2].second) || (p->type.find(para[2].second)!=p->type.end() && p->type[para[2].second]==INTE)) {
+        GetInt(2, c);
+        i++;
+    } else
+        c=Main.locz;
+    string &s=Events[c][a][b];
     s="(main ";
-    for (int i=2;i<para.size();i++)
+    for (;i<para.size();i++)
         s+=para[i].second+" ";
     s+=")";
     return Empty;
@@ -145,8 +165,8 @@ Def(SetBlock) {
         GetInt(1, b);
         GetInt(2, c);
         if (c<BlockArray.size())
-            Main.fl[0].Set(a, b, BlockArray[c]);
-        Main.fl[0].Show(a, b);
+            Main.fl[Main.locz].Set(a, b, BlockArray[c]);
+        Main.fl[Main.locz].Show(a, b);
         return Empty;
     } else
         return Source(p, para);
@@ -156,7 +176,7 @@ Def(GetBlock) {
     int a, b;
     GetInt(0, a);
     GetInt(1, b);
-    BlockType* t=Main.fl[0].Get(a, b);
+    BlockType* t=Main.fl[Main.locz].Get(a, b);
     return ParaList(1, Pair(INTE, Transfer(t->id)));
 }
 
@@ -164,7 +184,7 @@ Def(Crossable) {
     int a, b;
     GetInt(0, a);
     GetInt(1, b);
-    BlockType* t=Main.fl[0].Get(a, b);
+    BlockType* t=Main.fl[Main.locz].Get(a, b);
     return ParaList(1, Pair(INTE, Transfer(t->crossable)));
 }
 
@@ -201,10 +221,63 @@ Def(GetY) {
     return ParaList(1, Pair(INTE, Transfer(Main.locy)));
 }
 
+Def(GetZ) {
+    return ParaList(1, Pair(INTE, Transfer(Main.locz)));
+}
+
 Def(ChangeMap) {
     string s;
     GetStr(0, s);
     MapName=s;
+    return Empty;
+}
+
+Def(Refresh) {
+    gotoxy(1, 1);
+    Main.fl[Main.locz].Init();
+    gotoxy(Main.locx, Main.locy);
+    Player.Show();
+    return Empty;
+}
+
+Def(SetLocation) {
+    int x=Main.locx, y=Main.locy;
+    GetInt(0, Main.locx);
+    GetInt(1, Main.locy);
+    if (para.size()==3) {
+        GetInt(2, Main.locz);
+        gotoxy(1, 1);
+        Main.fl[Main.locz].Init();
+    }
+    LocationMoved(x, y, &Main);
+    return Empty;
+}
+
+Def(ResetMap) {
+    memset(Main.fl[Main.locz].explored, 0, sizeof(Main.fl[Main.locz].explored));
+    Main.fl[Main.locz]=Floor(&Null);
+    if (print == PRINT_EXPLORE || print == PRINT_TORCH)
+        for (int i=1;i<=horizon+1;i++)
+            for (int j=1;j<=horizon+1;j++)
+                Main.fl[Main.locz].explored[i][j]=1;
+    else if (print == PRINT_OVERVIEW)
+        for (int i=1;i<=40;i++)
+            for (int j=1;j<=20;j++)
+                Main.fl[Main.locz].explored[i][j]=1;
+    return Empty;
+}
+
+Def(AddFloor) {
+    Main.fl.push_back(Floor(&Null));
+    Main.locz++;
+    if (print == PRINT_EXPLORE || print == PRINT_TORCH)
+        for (int i=1;i<=horizon+1;i++)
+            for (int j=1;j<=horizon+1;j++)
+                Main.fl[Main.locz].explored[i][j]=1;
+    else if (print == PRINT_OVERVIEW)
+        for (int i=1;i<=40;i++)
+            for (int j=1;j<=20;j++)
+                Main.fl[Main.locz].explored[i][j]=1;
     return Empty;
 }
 
@@ -228,7 +301,12 @@ void Init() {
     exec.Add("can-cross", Crossable);
     exec.Add("locx", GetX);
     exec.Add("locy", GetY);
+    exec.Add("locz", GetZ);
     exec.Add("changemap", ChangeMap);
+    exec.Add("refresh", Refresh);
+    exec.Add("reset", ResetMap);
+    exec.Add("setloc", SetLocation);
+    exec.Add("addfloor", AddFloor);
     exec.AddPreserved("event", AddEvent);
     exec.AddPreserved("key", AddKey);
     exec.AddVar("method", -32000);
@@ -267,13 +345,13 @@ int Cal(int argc, char **argv) {
     if (print == PRINT_EXPLORE || print == PRINT_TORCH)
         for (int i=1;i<=horizon+1;i++)
             for (int j=1;j<=horizon+1;j++)
-                Main.fl[0].explored[i][j]=1;
+                Main.fl[Main.locz].explored[i][j]=1;
     else if (print == PRINT_OVERVIEW)
-        for (int i=1;i<=20;i++)
-            for (int j=1;j<=40;j++)
-                Main.fl[0].explored[i][j]=1;
+        for (int i=1;i<=40;i++)
+            for (int j=1;j<=20;j++)
+                Main.fl[Main.locz].explored[i][j]=1;
     gotoxy(1, 1);
-    Main.fl[0].Init();
+    Main.fl[Main.locz].Init();
     gotoxy(1, 1);
     Player.Show();
     Main.locx=Main.locy=1;
