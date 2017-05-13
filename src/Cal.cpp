@@ -22,7 +22,7 @@ string MapName;
 vector<BlockType*> BlockArray={&Null, &Wall, &Stair};
 map<int, string> UserKeys;
 
-int print;
+int print, horizon=2;
 // 0 for Overview mode
 // 1 for Explore mode
 // 2 for Torch mode
@@ -40,6 +40,7 @@ void Exit(Map *m = NULL) {
     exit(0);
 }
 
+BlockType Dark(BLACK, BLACK, "  ");
 void KeyPress(Map *m) {
     if (!kbhit())
         return ;
@@ -68,8 +69,8 @@ void KeyPress(Map *m) {
             } else if (print == PRINT_EXPLORE) {
                 m->fl[m->locz].Show(bakx, baky);
                 gotoxy(m->locx, m->locy);
-                for (int i=m->locx-2;i<=m->locx+2;i++)
-                    for (int j=m->locy-2;j<=m->locy+2;j++)
+                for (int i=m->locx-horizon;i<=m->locx+horizon;i++)
+                    for (int j=m->locy-horizon;j<=m->locy+horizon;j++)
                         if (!(i<1||i>40||j<1||j>20))
                             if (!m->fl[m->locz].explored[i][j]) {
                                 m->fl[m->locz].explored[i][j]=1;
@@ -78,7 +79,20 @@ void KeyPress(Map *m) {
                 gotoxy(m->locx, m->locy);
                 Player.Show();
             } else if (print == PRINT_TORCH) {
-                cout << "Not supported yet!" << endl;
+                m->fl[m->locz].Show(bakx, baky);
+                for (int i=min(bakx, m->locx)-horizon;i<=max(bakx, m->locx)+horizon;i++)
+                    for (int j=min(baky, m->locy)-horizon;j<=max(baky, m->locy)+horizon;j++)
+                        if (!(i<1||i>40||j<1||j>20)) {
+                            if ( (i>=m->locx-horizon && i<=m->locx+horizon && (! (i>=bakx-horizon && i<=bakx+horizon))) ||
+                                (j>=m->locy-horizon && j<=m->locy+horizon && (! (j>=baky-horizon && j<=baky+horizon))) )
+                                m->fl[m->locz].Show(i, j);
+                            else if (! (i>=m->locx-horizon && i<=m->locx+horizon && j>=m->locy-horizon && j<=m->locy+horizon)){
+                                gotoxy(i, j);
+                                Dark.Show();
+                            }
+                        }
+                gotoxy(m->locx, m->locy);
+                Player.Show();
             }
             if ((tmp=Events[m->locx][m->locy])!="") {
                 stringstream ss;
@@ -170,11 +184,12 @@ Def(DefBlock) {
 Def(AddKey) {
     string ch;
     GetStr(0, ch);
-    string &s=UserKeys[ch[0]];
-    s="(main ";
+    string tar="(main ";
     for (int i=1;i<para.size();i++)
-        s+=para[i].second+" ";
-    s+=")";
+        tar+=para[i].second+" ";
+    tar+=")";
+    for (int i=0;i<ch.length();i++)
+        UserKeys[ch[i]]=tar;
     return Empty;
 }
 
@@ -217,6 +232,7 @@ void Init() {
     exec.AddPreserved("event", AddEvent);
     exec.AddPreserved("key", AddKey);
     exec.AddVar("method", 0);
+    exec.AddVar("horizon", 2);
 }
 
 int Cal(int argc, char **argv) {
@@ -231,9 +247,10 @@ int Cal(int argc, char **argv) {
         exec.Exec(fin);
     fin.close();
     print=exec.Int["method"];
-    if (print == PRINT_EXPLORE)
-        for (int i=1;i<=3;i++)
-            for (int j=1;j<=3;j++)
+    horizon=exec.Int["horizon"];
+    if (print == PRINT_EXPLORE || print == PRINT_TORCH)
+        for (int i=1;i<=horizon+1;i++)
+            for (int j=1;j<=horizon+1;j++)
                 Main.fl[0].explored[i][j]=1;
     else if (print == PRINT_OVERVIEW)
         for (int i=1;i<=20;i++)
