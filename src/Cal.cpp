@@ -22,6 +22,14 @@ string MapName;
 vector<BlockType*> BlockArray={&Null, &Wall, &Stair};
 map<int, string> UserKeys;
 
+int print;
+// 0 for Overview mode
+// 1 for Explore mode
+// 2 for Torch mode
+#define PRINT_OVERVIEW 0
+#define PRINT_EXPLORE 1
+#define PRINT_TORCH 2
+
 void Exit(Map *m = NULL) {
     m=&Main;
     unhidecursor();
@@ -53,9 +61,25 @@ void KeyPress(Map *m) {
             m->locy=baky;
         }
         if (m->locx!=bakx || m->locy!=baky) {
-            m->fl[m->locz].Show(bakx, baky);
-            gotoxy(m->locx, m->locy);
-            Player.Show();
+            if (print == PRINT_OVERVIEW) {
+                m->fl[m->locz].Show(bakx, baky);
+                gotoxy(m->locx, m->locy);
+                Player.Show();
+            } else if (print == PRINT_EXPLORE) {
+                m->fl[m->locz].Show(bakx, baky);
+                gotoxy(m->locx, m->locy);
+                for (int i=m->locx-2;i<=m->locx+2;i++)
+                    for (int j=m->locy-2;j<=m->locy+2;j++)
+                        if (!(i<1||i>40||j<1||j>20))
+                            if (!m->fl[m->locz].explored[i][j]) {
+                                m->fl[m->locz].explored[i][j]=1;
+                                m->fl[m->locz].Show(i, j);
+                            }
+                gotoxy(m->locx, m->locy);
+                Player.Show();
+            } else if (print == PRINT_TORCH) {
+                cout << "Not supported yet!" << endl;
+            }
             if ((tmp=Events[m->locx][m->locy])!="") {
                 stringstream ss;
                 ss.str("");
@@ -192,6 +216,7 @@ void Init() {
     exec.Add("changemap", ChangeMap);
     exec.AddPreserved("event", AddEvent);
     exec.AddPreserved("key", AddKey);
+    exec.AddVar("method", 0);
 }
 
 int Cal(int argc, char **argv) {
@@ -205,6 +230,15 @@ int Cal(int argc, char **argv) {
     if (fin)
         exec.Exec(fin);
     fin.close();
+    print=exec.Int["method"];
+    if (print == PRINT_EXPLORE)
+        for (int i=1;i<=3;i++)
+            for (int j=1;j<=3;j++)
+                Main.fl[0].explored[i][j]=1;
+    else if (print == PRINT_OVERVIEW)
+        for (int i=1;i<=20;i++)
+            for (int j=1;j<=40;j++)
+                Main.fl[0].explored[i][j]=1;
     gotoxy(1, 1);
     Main.fl[0].Init();
     gotoxy(1, 1);

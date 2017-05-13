@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include "Conio+.h"
 #include "Map.h"
 //BlockType
@@ -14,24 +15,17 @@ void BlockType::Rever() {
 
 //Floor
 Floor::Floor(BlockType* bt) {
+    memset(explored, 0, sizeof(explored));
     for (int i=0;i<=40;i++)
         for (int j=0;j<=40;j++)
             Map[i][j]=bt;
 }
 
 void Floor::Init() {
-    for (int i=1;i<=20;i++) {
-        for (int j=1;j<=40;j++)
-            Map[j][i]->Show();
-        putchar('\n');
-    }
-}
-
-void Floor::DarkInit() {
     BlockType Dark(BLACK, BLACK, "  ");
     for (int i=1;i<=20;i++) {
         for (int j=1;j<=40;j++)
-            if (i<=3&&j<=3)
+            if (explored[i][j])
                 Map[j][i]->Show();
             else
                 Dark.Show();

@@ -1,5 +1,6 @@
 (main
     ;将maze.map中的坐标设置为墙
+    (= method 1)
     (set Wall "maze.map")
     ;当到达坐标 (1, 2) 时触发事件
     (event 1 2

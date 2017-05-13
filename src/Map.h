@@ -22,8 +22,8 @@ class Floor {
     private:
         BlockType* Map[45][45];
     public:
+        bool explored[45][45];
         void Init();
-        void DarkInit();
         Floor(BlockType* bt);
         void Set(int x, int y, BlockType* bt);
         BlockType* Get(int x, int y);
