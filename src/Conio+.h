@@ -49,12 +49,11 @@ void gotoxy_origin(int x,int y);
 void hidecursor();
 void unhidecursor();
 void color(int a,int b);
-void foreground(int a);
-void background(int a);
 double pro_time();
 int readkey(double _time__);
 string colorname(int x);
 int getcolor(string x);
 void clearcolor();
 void clear();
+void MiddlePuts(string s);
 #endif

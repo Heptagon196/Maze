@@ -136,28 +136,14 @@ Def(Exec) {
 }
 
 Def(PrintMid) {
-#if defined(linux) || defined(__APPLE__)
-    struct winsize size;
-    ioctl(STDIN_FILENO, TIOCGWINSZ, &size);
-    int W=size.ws_col;
-#else
-#define W 80
-#endif
     string s;
     GetStr(0, s);
-    for (int i=0;i<(W-s.length())/2;i++)
-        putchar(' ');
-    cout << s;
-    for (int i=0;i<W-s.length()-(W-s.length())/2;i++)
-        putchar(' ');
-#if defined(linux) || defined(__APPLE__)
-#else
-    putchar('\n');
-#endif
+    MiddlePuts(s);
     return Empty;
 }
 
 void ImportExt(Interpreter &s) {
+    srand(time(NULL));
 #if defined(linux) || defined(__APPLE__)
     s.AddVar("black", 0);
     s.AddVar("blue", 4);

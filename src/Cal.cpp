@@ -8,6 +8,7 @@
 #include "Map.h"
 #include "Cal.h"
 #include "InterpreterExt.h"
+#include "Bag.h"
 
 Map Main;
 Interpreter exec;
@@ -292,6 +293,7 @@ void Init() {
     Main.Add(KeyPress);
 
     ImportExt(exec);
+    ImportBag(exec);
     exec.AddVar("Empty", 0);
     exec.AddVar("Wall", 1);
     exec.AddVar("Stair", 2);

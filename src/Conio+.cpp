@@ -1,3 +1,4 @@
+int bakfg = -1, bakbg = -1;
 #if defined(linux) || defined(__APPLE__)
 #include <termios.h>
 #include <unistd.h>
@@ -7,6 +8,8 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
+#include <sys/types.h>
+#include <sys/ioctl.h>
 using namespace std;
 
 #define BLACK 0
@@ -73,15 +76,10 @@ void unhidecursor() {
 }
 
 void color(int a,int b) {
-	printf("\033[%dm\033[%dm",b+40,a+30);
-}
-
-void foreground(int a) {
-    printf("\033[%dm",a+30);
-}
-
-void background(int a) {
-    printf("\033[%dm",a+40);
+    if (bakfg != a || bakbg != b)
+    	printf("\033[%dm\033[%dm",b+40,a+30);
+    bakfg = a;
+    bakbg = b;
 }
 
 void clearcolor() {
@@ -146,19 +144,11 @@ void unhidecursor() {
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE),&cursor_info);
 }
 
-void color(int a,int b)
-{
-	if (a>15||b>15)
-        return ;
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),on_(a,b));
-}
-
-void foreground(int a) {
-    color(a, BLACK);
-}
-
-void background(int a) {
-    color(WHITE, a);
+void color(int a,int b) {
+    if (bakfg != a || bakbg != b)
+    	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),on_(a,b));
+    bakfg = a;
+    bakbg = b;
 }
 
 void clearcolor() {
@@ -223,4 +213,23 @@ int getcolor(string x) {
     if (x=="white")
         return WHITE;
     return -1;
+}
+
+void MiddlePuts(string s) {
+#if defined(linux) || defined(__APPLE__)
+    struct winsize size;
+    ioctl(STDIN_FILENO, TIOCGWINSZ, &size);
+    int W=size.ws_col;
+#else
+#define W 80
+#endif
+    for (int i=0;i<(W-s.length())/2;i++)
+        putchar(' ');
+    cout << s;
+    for (int i=0;i<W-s.length()-(W-s.length())/2;i++)
+        putchar(' ');
+#if defined(linux) || defined(__APPLE__)
+#else
+    putchar('\n');
+#endif
 }
