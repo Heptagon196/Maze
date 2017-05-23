@@ -162,9 +162,9 @@ Def(AddEvent) {
 Def(SetBlock) {
     if (para.size()==3) {
         int a, b, c;
-        GetInt(0, a);
-        GetInt(1, b);
-        GetInt(2, c);
+        GetInt(0, c);
+        GetInt(1, a);
+        GetInt(2, b);
         if (c<BlockArray.size())
             Main.fl[Main.locz].Set(a, b, BlockArray[c]);
         Main.fl[Main.locz].Show(a, b);

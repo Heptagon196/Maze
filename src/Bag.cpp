@@ -70,6 +70,6 @@ Def(SelectItem) {
 void ImportBag(Interpreter& s) {
     s.Add("item.add", AddItem);
     s.Add("item.remove", RemoveItem);
-    s.Add("item.get", GetItem);
+    s.Add("item.find", GetItem);
     s.Add("item.select", SelectItem);
 }
