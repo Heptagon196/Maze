@@ -14,7 +14,7 @@ Cal.o:
 InterpreterExt.o:
 	$(CC) -c InterpreterExt.cpp -o InterpreterExt.o $(FLAGS)
 Bag.o:
-	$(CC) -c Bag.cpp -o Bag.o $(FLAG)
+	$(CC) -c Bag.cpp -o Bag.o $(FLAGS)
 clean:
 	rm *.o -f
 debug:
