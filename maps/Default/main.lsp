@@ -1,5 +1,5 @@
 (main
-    (map.def Wall white blue "  " true)
+    ;(map.def Wall white blue "  " true)
     ;map.level指定显示方式。0 代表全部显示，1 代表显示探索过的方块，2 代表显示视野内的方块
     (map.level 0)
     ;map.horizon指定视野范围，默认为2。
