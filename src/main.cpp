@@ -7,7 +7,7 @@
 int main(int argc, char **argv) {
 #ifndef linux
     system("mode con lines=40");
-    system("mode con cols=80");
+    system("mode con cols=81");
 #endif
     return Cal(argc, argv);
 }
