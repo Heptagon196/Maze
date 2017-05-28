@@ -37,6 +37,8 @@ const ParaList False=ParaList(1, Pair(INTE, "0"));
 
 class Interpreter {
     public:
+        int printed;
+        double lastprint;
         unordered_map<string, int> Int;
         unordered_map<string, string> Str;
         unordered_map<string, Function> Func;

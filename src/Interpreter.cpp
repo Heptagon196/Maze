@@ -250,6 +250,8 @@ ParaList Interpreter::Exec(istream &fin) {
 }
 
 Def(print) {
+    p->printed=true;
+    p->lastprint=pro_time();
     if (cout.rdbuf()==OutBuf && p->Int["OUTPUT_TO_THE_BOTTOM"]==0) {
         gotoxy(1, 21);
         color(BLACK, WHITE);

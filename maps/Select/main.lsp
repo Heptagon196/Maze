@@ -41,9 +41,9 @@
     (while (!= s CR)
         (= s (getch))
         (= bak line)
-        (if (== s "w") (-- line))
-        (if (== s "s") (++ line))
-        (if (== s "q") (exit))
+        (if (sub s "wkAH") (-- line))
+        (if (sub s "sjBP") (++ line))
+        (if (sub s "q") (exit))
         (if (== line k) (= line 0))
         (if (== line -1) (= line (- k 1)))
         (if (!= line bak)
@@ -61,7 +61,7 @@
         (exit)
     )
     ;修改Cal.cpp中的全局变量MapName
-    (changemap s[line])
+    (map.change s[line])
     ;调用脚本
     (source (+ (+ "maps/" s[line]) "/main.lsp"))
 )

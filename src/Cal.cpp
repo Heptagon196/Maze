@@ -34,12 +34,22 @@ int print, horizon=2;
 
 void Exit(Map *m = NULL) {
     m=&Main;
-    unhidecursor();
-    clearcolor();
-    clear();
-    puts("\nPress any key to exit...");
-    getch();
-    exit(0);
+    char ch;
+    gotoxy(1, 21);
+    color(BLACK, WHITE);
+    puts("Are you sure you want to exit? [Y/n]");
+    ch=getch();
+    if (ch=='Y' || ch=='y') {
+        clearcolor();
+        clear();
+        unhidecursor();
+        exit(0);
+    } else {
+        gotoxy(1, 21);
+        color(BLACK, WHITE);
+        for (int i=0;i<80;i++)
+            putchar(' ');
+    }
 }
 
 BlockType Dark(BLACK, BLACK, "  ");
@@ -282,6 +292,20 @@ Def(AddFloor) {
     return Empty;
 }
 
+Def(SetMethod) {
+    int tmp;
+    GetInt(0, tmp);
+    print=tmp;
+    return Empty;
+}
+
+Def(SetHorizon) {
+    int tmp;
+    GetInt(0, tmp);
+    horizon=tmp;
+    return Empty;
+}
+
 void Init() {
     Main.fl.push_back(Floor(&Null));
     Keys['w']=[](Map *m){m->locy--;};
@@ -297,18 +321,20 @@ void Init() {
     exec.AddVar("Empty", 0);
     exec.AddVar("Wall", 1);
     exec.AddVar("Stair", 2);
-    exec.Add("get", GetBlock);
-    exec.Add("set", SetBlock);
-    exec.Add("def", DefBlock);
-    exec.Add("can-cross", Crossable);
-    exec.Add("locx", GetX);
-    exec.Add("locy", GetY);
-    exec.Add("locz", GetZ);
-    exec.Add("changemap", ChangeMap);
-    exec.Add("refresh", Refresh);
-    exec.Add("reset", ResetMap);
-    exec.Add("setloc", SetLocation);
-    exec.Add("addfloor", AddFloor);
+    exec.Add("map.get", GetBlock);
+    exec.Add("map.set", SetBlock);
+    exec.Add("map.def", DefBlock);
+    exec.Add("map.can-cross", Crossable);
+    exec.Add("map.x", GetX);
+    exec.Add("map.y", GetY);
+    exec.Add("map.z", GetZ);
+    exec.Add("map.change", ChangeMap);
+    exec.Add("map.refresh", Refresh);
+    exec.Add("map.reset", ResetMap);
+    exec.Add("map.setloc", SetLocation);
+    exec.Add("map.horizon", SetHorizon);
+    exec.Add("map.level", SetMethod);
+    exec.Add("floor.add", AddFloor);
     exec.AddPreserved("event", AddEvent);
     exec.AddPreserved("key", AddKey);
     exec.AddVar("method", -32000);
@@ -323,16 +349,10 @@ int Cal(int argc, char **argv) {
     if (fin) {
         Interpreter config;
         ImportExt(config);
-        config.AddVar("method", -32000);
-        config.AddVar("horizon", -32000);
         config.type["MapName"]=STR;
         config.Exec(fin);
         if (config.Str["MapName"]!="")
             MapName=config.Str["MapName"];
-        if (config.Int["method"]!=-32000)
-            print=config.Int["method"];
-        if (config.Int["horizon"]!=-32000)
-            horizon=config.Int["horizon"];
     }
     fin.close();
     Init();
@@ -340,10 +360,6 @@ int Cal(int argc, char **argv) {
     if (fin)
         exec.Exec(fin);
     fin.close();
-    if (exec.Int["method"]!=-32000)
-        print=exec.Int["method"];
-    if (exec.Int["horizon"]!=-32000)
-        horizon=exec.Int["horizon"];
     if (print == PRINT_EXPLORE || print == PRINT_TORCH)
         for (int i=1;i<=horizon+1;i++)
             for (int j=1;j<=horizon+1;j++)

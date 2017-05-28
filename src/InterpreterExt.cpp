@@ -142,6 +142,15 @@ Def(PrintMid) {
     return Empty;
 }
 
+Def(Sub) {
+    string a, b;
+    GetStr(0, a);
+    GetStr(1, b);
+    if (b.find(a)!=b.npos)
+        return True;
+    return False;
+}
+
 void ImportExt(Interpreter &s) {
     srand(time(NULL));
 #if defined(linux) || defined(__APPLE__)
@@ -180,5 +189,6 @@ void ImportExt(Interpreter &s) {
     s.Add("readfrom", ReadFrom);
     s.Add("printmid", PrintMid);
     s.Add("source", Exec);
+    s.Add("sub", Sub);
 }
 
