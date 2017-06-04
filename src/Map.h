@@ -17,6 +17,7 @@ class BlockType {
         void Show();
         void Rever();
 };
+static BlockType Dark(BLACK, BLACK, "  ");
 
 class Floor {
     private:

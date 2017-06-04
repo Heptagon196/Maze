@@ -9,6 +9,7 @@
 #include "Cal.h"
 #include "InterpreterExt.h"
 #include "Bag.h"
+#include "Creature.h"
 
 Map Main;
 Interpreter exec;
@@ -24,13 +25,14 @@ string MapName;
 vector<BlockType*> BlockArray={&Null, &Wall, &Stair};
 map<int, string> UserKeys;
 
-int print, horizon=2;
 // 0 for Overview mode
 // 1 for Explore mode
 // 2 for Torch mode
 #define PRINT_OVERVIEW 0
 #define PRINT_EXPLORE 1
 #define PRINT_TORCH 2
+
+int print, horizon=2;
 
 void Exit(Map *m = NULL) {
     m=&Main;
@@ -52,7 +54,6 @@ void Exit(Map *m = NULL) {
     }
 }
 
-BlockType Dark(BLACK, BLACK, "  ");
 void LocationMoved(int bakx, int baky, Map *m) {
     string tmp;
     if (m->locx < 1 || m->locx > 40 || m->locy < 1 || m->locy > 20 || m->locz < 0 || m->locz >= m->fl.size() ||
@@ -306,6 +307,42 @@ Def(SetHorizon) {
     return Empty;
 }
 
+Def(Experimental) {
+    double last=pro_time();
+    int first=1;
+    AddCreature(WHITE, BLACK, "  ", [&](int &x, int &y)->void {
+        if (first) {
+            first=0;
+            x=12;
+            y=12;
+            return ;
+        }
+        if (Main.locx == x && Main.locy == y) {
+            puts("You Lose!");
+            getch();
+            unhidecursor();
+            exit(0);
+        }
+        if (pro_time()-last < 0.1)
+            return ;
+        last=pro_time();
+        if (rand()%2)
+            x+=rand()%2*2-1;
+        else
+            y+=rand()%2*2-1;
+        if (x==41) x=1;
+        if (x==0) x=40;
+        if (y==21) y=1;
+        if (y==0) y=20;
+    });
+    return Empty;
+}
+
+Def(ExperimentalOff) {
+    PopCreature();
+    return Empty;
+}
+
 void Init() {
     Main.fl.push_back(Floor(&Null));
     Keys['w']=[](Map *m){m->locy--;};
@@ -315,6 +352,7 @@ void Init() {
     Keys['q']=[](Map *m){Exit();};
 
     Main.Add(KeyPress);
+    Main.Add(CreatureMove);
 
     ImportExt(exec);
     ImportBag(exec);
@@ -334,6 +372,8 @@ void Init() {
     exec.Add("map.setloc", SetLocation);
     exec.Add("map.horizon", SetHorizon);
     exec.Add("map.level", SetMethod);
+    exec.Add("devmode.on", Experimental);
+    exec.Add("devmode.off", ExperimentalOff);
     exec.Add("floor.add", AddFloor);
     exec.AddPreserved("event", AddEvent);
     exec.AddPreserved("key", AddKey);
@@ -348,6 +388,9 @@ int Cal(int argc, char **argv) {
     MapName="Default";
     if (fin) {
         Interpreter config;
+        config.Add("map.horizon", SetHorizon);
+        config.Add("map.level", SetMethod);
+        config.Add("devmode.on", Experimental);
         ImportExt(config);
         config.type["MapName"]=STR;
         config.Exec(fin);
@@ -377,4 +420,5 @@ int Cal(int argc, char **argv) {
     return 0;
 }
 
+//TODO: Creature
 //TODO: Background job

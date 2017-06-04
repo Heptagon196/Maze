@@ -1,4 +1,5 @@
 (main
+    (devmode.off)
     (map.level 0)
     (map.def NewWall white blue "  " true)
     ;定义新方块，蓝色，可以穿过

@@ -22,7 +22,6 @@ Floor::Floor(BlockType* bt) {
 }
 
 void Floor::Init() {
-    BlockType Dark(BLACK, BLACK, "  ");
     for (int i=1;i<=20;i++) {
         for (int j=1;j<=40;j++)
             if (explored[j][i])

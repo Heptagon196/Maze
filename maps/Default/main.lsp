@@ -1,9 +1,9 @@
 (main
     ;(map.def Wall white blue "  " true)
     ;map.level指定显示方式。0 代表全部显示，1 代表显示探索过的方块，2 代表显示视野内的方块
-    (map.level 0)
+    ;(map.level 0)
     ;map.horizon指定视野范围，默认为2。
-    (map.horizon 2)
+    ;(map.horizon 2)
     ;将maze.map中的坐标设置为墙
     (map.set Wall "maze.map")
     ;当到达坐标 (1, 2) 时触发事件

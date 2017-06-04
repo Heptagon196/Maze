@@ -1,8 +1,10 @@
 CC=g++
 FLAGS=--std=c++11 -Dlinux -O3
-DEPEN=Map.o Conio.o Interpreter.o Cal.o InterpreterExt.o Bag.o
+DEPEN=Map.o Conio.o Interpreter.o Cal.o InterpreterExt.o Bag.o Creature.o main.o
 compile:$(DEPEN)
-	$(CC) $(DEPEN) main.cpp -o ../Maze $(FLAGS)
+	$(CC) $(DEPEN) -o ../Maze $(FLAGS)
+main.o:
+	$(CC) -c main.cpp $(FLAGS)
 Map.o:
 	$(CC) -c Map.cpp $(FLAGS)
 Conio.o:
@@ -15,6 +17,8 @@ InterpreterExt.o:
 	$(CC) -c InterpreterExt.cpp -o InterpreterExt.o $(FLAGS)
 Bag.o:
 	$(CC) -c Bag.cpp -o Bag.o $(FLAGS)
+Creature.o:
+	$(CC) -c Creature.cpp -o Creature.o $(FLAGS)
 clean:
 	rm *.o -f
 debug:
