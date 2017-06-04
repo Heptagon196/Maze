@@ -307,12 +307,12 @@ Def(SetHorizon) {
     return Empty;
 }
 
+double creature_last=pro_time();
+int creature_first=1;
 Def(Experimental) {
-    double last=pro_time();
-    int first=1;
     AddCreature(WHITE, BLACK, "  ", [&](int &x, int &y)->void {
-        if (first) {
-            first=0;
+        if (creature_first) {
+            creature_first=0;
             x=12;
             y=12;
             return ;
@@ -323,9 +323,9 @@ Def(Experimental) {
             unhidecursor();
             exit(0);
         }
-        if (pro_time()-last < 0.1)
+        if (pro_time()-creature_last < 0.1)
             return ;
-        last=pro_time();
+        creature_last=pro_time();
         if (rand()%2)
             x+=rand()%2*2-1;
         else
