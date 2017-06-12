@@ -164,7 +164,7 @@ void ImportExt(Interpreter &s) {
     s.AddVar("white", 7);
     s.AddVar("LINUX", 1);
 #else
-    s.AddVar("black", 8);
+    s.AddVar("black", 0);
     s.AddVar("blue", 9);
     s.AddVar("green", 10);
     s.AddVar("cyan", 11);

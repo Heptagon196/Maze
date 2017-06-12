@@ -1,4 +1,4 @@
-int bakfg = -1, bakbg = -1;
+int bakfg = -1, bakbg = 0;
 #if defined(linux) || defined(__APPLE__)
 #include <termios.h>
 #include <unistd.h>
@@ -108,7 +108,7 @@ using namespace std;
 #define purple 13
 #define yellow 14
 #define white 15*/
-#define BLACK 8
+#define BLACK 0
 #define BLUE 9
 #define GREEN 10
 #define CYAN 11

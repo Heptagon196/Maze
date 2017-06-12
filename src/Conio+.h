@@ -33,7 +33,7 @@ int getch(void);
 #include <fstream>
 #include <string>
 using namespace std;
-#define BLACK 8
+#define BLACK 0
 #define BLUE 9
 #define GREEN 10
 #define CYAN 11
