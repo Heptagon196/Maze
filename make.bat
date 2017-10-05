@@ -1,21 +1,20 @@
 @echo off
-cd src
-echo CPP main.cpp
-g++ -c main.cpp -o main.o --std=c++11 -O3
-echo CPP Conio+.cpp
-g++ -c Conio+.cpp -o Conio.o --std=c++11 -O3
-echo CPP Map.cpp
-g++ -c Map.cpp --std=c++11 -O3
-echo CPP Interpreter.cpp
-g++ -c Interpreter.cpp --std=c++11 -O3
-echo CPP InterpreterExt.cpp
-g++ -c InterpreterExt.cpp --std=c++11 -O3
-echo CPP Cal.cpp
-g++ -c Cal.cpp --std=c++11 -O3
-echo CPP Bag.cpp
-g++ -c Bag.cpp --std=c++11 -O3
-echo CPP Creature.cpp
-g++ -c Creature.cpp --std=c++11 -O3
-echo Maze
-g++ *.o -o ../Maze --std=c++11 -O3
-cd ..
+echo Building a release version
+echo [1/9] Compiling ./src/Interpreter.cpp
+g++ -c --std=c++11 -Dwindows -O2 ./src/Interpreter.cpp -o ./src/Interpreter.o
+echo [2/9] Compiling ./src/Conio+.cpp
+g++ -c --std=c++11 -Dwindows -O2 ./src/Conio+.cpp -o ./src/Conio+.o
+echo [3/9] Compiling ./src/Cal.cpp
+g++ -c --std=c++11 -Dwindows -O2 ./src/Cal.cpp -o ./src/Cal.o
+echo [4/9] Compiling ./src/Bag.cpp
+g++ -c --std=c++11 -Dwindows -O2 ./src/Bag.cpp -o ./src/Bag.o
+echo [5/9] Compiling ./src/Creature.cpp
+g++ -c --std=c++11 -Dwindows -O2 ./src/Creature.cpp -o ./src/Creature.o
+echo [6/9] Compiling ./src/InterpreterExt.cpp
+g++ -c --std=c++11 -Dwindows -O2 ./src/InterpreterExt.cpp -o ./src/InterpreterExt.o
+echo [7/9] Compiling ./src/main.cpp
+g++ -c --std=c++11 -Dwindows -O2 ./src/main.cpp -o ./src/main.o
+echo [8/9] Compiling ./src/Map.cpp
+g++ -c --std=c++11 -Dwindows -O2 ./src/Map.cpp -o ./src/Map.o
+echo [9/9] Building Maze
+g++ --std=c++11 -Dwindows -O2 ./src/Interpreter.o ./src/Conio+.o ./src/Cal.o ./src/Bag.o ./src/Creature.o ./src/InterpreterExt.o ./src/main.o ./src/Map.o -o Maze

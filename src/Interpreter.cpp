@@ -255,7 +255,7 @@ Def(print) {
     if (cout.rdbuf()==OutBuf && p->Int["OUTPUT_TO_THE_BOTTOM"]==0) {
         gotoxy(1, 21);
         color(BLACK, WHITE);
-        for (int i=0;i<80;i++)
+        for (int i=0;i<240;i++)
             putchar(' ');
         gotoxy(1, 21);
     }
@@ -354,6 +354,13 @@ Def(Mov) {
 }
 
 Def(Read) {
+    if (p->Int["OUTPUT_TO_THE_BOTTOM"] == 0) {
+        gotoxy(1, 21);
+        color(BLACK, WHITE);
+        for (int i=0;i<240;i++)
+            putchar(' ');
+        gotoxy(1, 21);
+    }
     for (int i=0;i<para.size();i++) {
         if (para[i].first!=REFER) {
             cerr << "Not a reference." << endl;

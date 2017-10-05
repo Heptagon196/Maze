@@ -219,14 +219,20 @@ void MiddlePuts(string s) {
 #if defined(linux) || defined(__APPLE__)
     struct winsize size;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &size);
-    int W=size.ws_col;
+    int W = size.ws_col;
 #else
 #define W 80
 #endif
-    for (int i=0;i<(W-s.length())/2;i++)
+    int truelen = s.length();
+    int cnt = 0;
+    for (int i = 0; i < s.length(); ++ i)
+        if (s[i] < 0)
+            cnt ++;
+    truelen -= cnt / 3;
+    for (int i = 0; i < (W - truelen) / 2; ++ i)
         putchar(' ');
     cout << s;
-    for (int i=0;i<W-s.length()-(W-s.length())/2;i++)
+    for (int i = 0; i < W - truelen - (W - truelen) / 2; ++ i)
         putchar(' ');
 #if defined(linux) || defined(__APPLE__)
 #else

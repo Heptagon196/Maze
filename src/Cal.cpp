@@ -67,7 +67,7 @@ void LocationMoved(int bakx, int baky, Map *m) {
             gotoxy(m->locx, m->locy);
             Player.Show();
         } else if (print == PRINT_EXPLORE) {
-            if (bakx>=m->locx-2 && bakx<=m->locx+2 && baky>=m->locy-2 && baky<=m->locy+2)
+            if (bakx>=m->locx-horizon && bakx<=m->locx+horizon && baky>=m->locy-horizon && baky<=m->locy+horizon)
                 m->fl[m->locz].Show(bakx, baky);
             gotoxy(m->locx, m->locy);
             for (int i=m->locx-horizon;i<=m->locx+horizon;i++)
@@ -80,7 +80,7 @@ void LocationMoved(int bakx, int baky, Map *m) {
             gotoxy(m->locx, m->locy);
             Player.Show();
         } else if (print == PRINT_TORCH) {
-            if (bakx>=m->locx-2 && bakx<=m->locx+2 && baky>=m->locy-2 && baky<=m->locy+2)
+            if (bakx>=m->locx-horizon && bakx<=m->locx+horizon && baky>=m->locy-horizon && baky<=m->locy+horizon)
                 m->fl[m->locz].Show(bakx, baky);
             for (int i=min(bakx, m->locx)-horizon;i<=max(bakx, m->locx)+horizon;i++)
                 for (int j=min(baky, m->locy)-horizon;j<=max(baky, m->locy)+horizon;j++)
@@ -293,6 +293,10 @@ Def(AddFloor) {
     return Empty;
 }
 
+Def(FloorSize) {
+    return ParaList(1, Pair(INTE, Transfer(Main.fl.size())));
+}
+
 Def(SetMethod) {
     int tmp;
     GetInt(0, tmp);
@@ -305,6 +309,16 @@ Def(SetHorizon) {
     GetInt(0, tmp);
     horizon=tmp;
     return Empty;
+}
+
+Def(Eval) {
+    string s;
+    GetStr(0, s);
+    s = "(main " + s + ")";
+    stringstream ss;
+    ss.str("");
+    ss << s;
+    return exec.Exec(ss);
 }
 
 double creature_last=pro_time();
@@ -375,6 +389,8 @@ void Init() {
     exec.Add("devmode.on", Experimental);
     exec.Add("devmode.off", ExperimentalOff);
     exec.Add("floor.add", AddFloor);
+    exec.Add("floor.size", FloorSize);
+    exec.Add("eval", Eval);
     exec.AddPreserved("event", AddEvent);
     exec.AddPreserved("key", AddKey);
     exec.AddVar("method", -32000);

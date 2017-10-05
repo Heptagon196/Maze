@@ -74,9 +74,9 @@ Def(Clear) {
 
 Def(Bash) {
     if (para[0].first==REFER)
-        system(p->Str[para[0].second].c_str());
+        return ParaList(1, Pair(INTE, Transfer(system(p->Str[para[0].second].c_str()))));
     else if (para[0].first==STR)
-        system(para[0].second.substr(1, para[0].second.length()-2).c_str());
+        return ParaList(1, Pair(INTE, Transfer(system(para[0].second.substr(1, para[0].second.length()-2).c_str()))));
     return Empty;
 }
 
