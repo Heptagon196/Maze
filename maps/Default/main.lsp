@@ -9,23 +9,23 @@
     (item.add "1")
     (item.add "2")
     (item.add "3")
-    (= (string keyname) "[橙装] 传奇的生锈钥匙")
+    (= (string Key) "[橙装] 传奇的生锈钥匙")
     ;当到达坐标 (1, 2) 时触发事件
     (event 1 2 0
         (print "出口在右下角。")
     )
     (event 1 15 0
-        (if (! (item.find "Key"))
+        (if (! (item.find Key))
             (print "你找到了一把钥匙！")
-            (item.add keyname)
+            (item.add Key)
         )
     )
     (event 39 17 0
-        (if (! (item.find "Key"))
+        (if (! (item.find Key))
             (print "路被堵住了，出口在左下角。")
         (else)
             (print "门被打开了。")
-            (item.remove keyname)
+            (item.remove Key)
             (map.set Empty 39 18)
         )
     )
@@ -47,7 +47,7 @@
     (key "b"
         (= (string itemname) (item.select))
         (map.refresh)
-        (if (== itemname keyname)
+        (if (== itemname Key)
             (print "一把传奇的钥匙，可惜生锈了，说不定会在开门时断掉。装备后可以减少 90% 的攻击力，达到装弱的效果。")
         )
     )
