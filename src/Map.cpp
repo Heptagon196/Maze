@@ -16,24 +16,28 @@ void BlockType::Rever() {
 //Floor
 Floor::Floor(BlockType* bt) {
     memset(explored, 0, sizeof(explored));
-    for (int i=0;i<=40;i++)
-        for (int j=0;j<=40;j++)
-            Map[i][j]=bt;
+    for (int i = 0; i <= 40; i ++)  {
+        for (int j = 0; j <= 40; j ++) {
+            Map[i][j] = bt;
+        }
+    }
 }
 
 void Floor::Init() {
-    for (int i=1;i<=20;i++) {
-        for (int j=1;j<=40;j++)
-            if (explored[j][i])
+    for (int i = 1; i <= 20; i ++) {
+        for (int j = 1; j <= 40; j ++) {
+            if (explored[j][i]) {
                 Map[j][i]->Show();
-            else
+            } else {
                 Dark.Show();
+            }
+        }
         putchar('\n');
     }
 }
 
 void Floor::Set(int x, int y, BlockType* bt) {
-    Map[x][y]=bt;
+    Map[x][y] = bt;
 }
 
 BlockType* Floor::Get(int x, int y) {
@@ -56,7 +60,9 @@ void Map::Add(function<void(Map*)> func) {
 }
 
 void Map::Exec() {
-    while (true)
-        for (int i=0;i<p.size();i++)
+    while (true) {
+        for (int i = 0; i < p.size(); i ++) {
             p[i](this);
+        }
+    }
 }

@@ -44,11 +44,11 @@ using namespace std;
 
 #endif
 
-void gotoxy(int x,int y);
-void gotoxy_origin(int x,int y);
+void gotoxy(int x, int y);
+void gotoxy_origin(int x, int y);
 void hidecursor();
 void unhidecursor();
-void color(int a,int b);
+void color(int a, int b);
 double pro_time();
 int readkey(double _time__);
 string colorname(int x);

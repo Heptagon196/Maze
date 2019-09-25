@@ -13,14 +13,13 @@ Creature::Creature(int fg, int bg, string text, ActFunc Action)
 
 void CreatureMove(Map *m) {
     BlockType Player(BLACK, YELLOW, "  ");
-    for (int i=0;i<c.size();i++) {
-        int bakx=c[i].x,
-            baky=c[i].y;
+    for (int i = 0; i < c.size(); i ++) {
+        int bakx = c[i].x, baky = c[i].y;
         c[i].Action(c[i].x, c[i].y);
         if (c[i].x !=bakx || c[i].y != baky) {
-            if (m->fl[m->locz].explored[bakx][baky])
+            if (m->fl[m->locz].explored[bakx][baky]) {
                 m->fl[m->locz].Show(bakx, baky);
-            else {
+            } else {
                 gotoxy(bakx, baky);
                 Dark.Show();
             }
@@ -38,6 +37,7 @@ void AddCreature(int fg, int bg, string text, function<void(int&, int&)> Action)
 }
 
 void PopCreature() {
-    if (c.size())
+    if (c.size()) {
         c.pop_back();
+    }
 }

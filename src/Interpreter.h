@@ -28,12 +28,24 @@ string Transfer(int integer);
 int ReferType(Interpreter* p, Pair x);
 static streambuf* OutBuf = cout.rdbuf();
 static streambuf* InBuf = cin.rdbuf();
-#define GetStr(x, y) if (para[x].first==REFER) y=p->Str[para[x].second]; else y=para[x].second.substr(1, para[x].second.length()-2);
-#define GetInt(x, y) if (para[x].first==REFER) y=p->Int[para[x].second]; else y=Transfer(para[x].second);
 
-const ParaList Empty=ParaList(0);
-const ParaList True=ParaList(1, Pair(INTE, "1"));
-const ParaList False=ParaList(1, Pair(INTE, "0"));
+#define GetStr(x, y)                                                \
+    if (para[x].first == REFER) {                                   \
+        y = p->Str[para[x].second];                                 \
+    } else {                                                        \
+        y = para[x].second.substr(1, para[x].second.length() - 2);  \
+    }
+
+#define GetInt(x, y)                                                \
+    if (para[x].first == REFER) {                                   \
+        y = p->Int[para[x].second];                                 \
+    } else {                                                        \
+        y = Transfer(para[x].second);                               \
+    }
+
+const ParaList Empty = ParaList(0);
+const ParaList True = ParaList(1, Pair(INTE, "1"));
+const ParaList False = ParaList(1, Pair(INTE, "0"));
 
 class Interpreter {
     public:

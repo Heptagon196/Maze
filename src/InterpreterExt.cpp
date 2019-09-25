@@ -5,14 +5,27 @@
 #include <sys/ioctl.h>
 #include <termios.h>
 #endif
-#define GetStr(x, y) if (para[x].first==REFER) y=p->Str[para[x].second]; else y=para[x].second.substr(1, para[x].second.length()-2);
-#define GetInt(x, y) if (para[x].first==REFER) y=p->Int[para[x].second]; else y=Transfer(para[x].second);
+
+#define GetStr(x, y)                                                \
+    if (para[x].first == REFER) {                                   \
+        y = p->Str[para[x].second];                                 \
+    } else {                                                        \
+        y = para[x].second.substr(1, para[x].second.length() - 2);  \
+    }
+
+#define GetInt(x, y)                                                \
+    if (para[x].first == REFER) {                                   \
+        y = p->Int[para[x].second];                                 \
+    } else {                                                        \
+        y = Transfer(para[x].second);                               \
+    }
 
 Def(Kbhit) {
-    if (kbhit())
+    if (kbhit()) {
         return True;
-    else
+    } else {
         return False;
+    }
 }
 
 Def(HideCursor) {
@@ -26,38 +39,43 @@ Def(UnHideCursor) {
 }
 
 Def(Getch) {
-    char ch=getch();
-    return ParaList(1, Pair(STR, '"'+string(1, ch)+'"'));
+    char ch = getch();
+    return ParaList(1, Pair(STR, '"' + string(1, ch) + '"'));
 }
 
 Def(Readkey) {
     int x;
-    if (para[0].first==REFER && p->type[para[0].second]==INTE)
-        x=p->Int[para[0].second];
-    else if (para[0].first==INTE)
-        x=Transfer(para[0].second);
-    char ch=readkey((double)x/1000.0);
-    return ParaList(1, Pair(STR, '"'+string(1, ch)+'"'));
+    if (para[0].first == REFER && p->type[para[0].second] == INTE) {
+        x = p->Int[para[0].second];
+    } else if (para[0].first == INTE) {
+        x = Transfer(para[0].second);
+    }
+    char ch = readkey((double)x / 1000.0);
+    return ParaList(1, Pair(STR, '"' + string(1, ch) + '"'));
 }
 
 Def(GotoXY) {
     int x[2];
-    for (int i=0;i<2;i++)
-        if (para[i].first==REFER && p->type[para[i].second]==INTE)
-            x[i]=p->Int[para[i].second];
-        else if (para[i].first==INTE)
-            x[i]=Transfer(para[i].second);
+    for (int i = 0; i < 2; i ++) {
+        if (para[i].first == REFER && p->type[para[i].second] == INTE) {
+            x[i] = p->Int[para[i].second];
+        } else if (para[i].first == INTE) {
+            x[i] = Transfer(para[i].second);
+        }
+    }
     gotoxy_origin(x[0], x[1]);
     return Empty;
 }
 
 Def(Color) {
     int x[2];
-    for (int i=0;i<2;i++)
-        if (para[i].first==REFER && p->type[para[i].second]==INTE)
-            x[i]=p->Int[para[i].second];
-        else if (para[i].first==INTE)
-            x[i]=Transfer(para[i].second);
+    for (int i = 0; i < 2; i ++) {
+        if (para[i].first == REFER && p->type[para[i].second] == INTE) {
+            x[i] = p->Int[para[i].second];
+        } else if (para[i].first == INTE) {
+            x[i] = Transfer(para[i].second);
+        }
+    }
     color(x[0], x[1]);
     return Empty;
 }
@@ -73,23 +91,27 @@ Def(Clear) {
 }
 
 Def(Bash) {
-    if (para[0].first==REFER)
+    if (para[0].first == REFER) {
         return ParaList(1, Pair(INTE, Transfer(system(p->Str[para[0].second].c_str()))));
-    else if (para[0].first==STR)
-        return ParaList(1, Pair(INTE, Transfer(system(para[0].second.substr(1, para[0].second.length()-2).c_str()))));
+    } else if (para[0].first == STR) {
+        return ParaList(1, Pair(INTE, Transfer(system(para[0].second.substr(1, para[0].second.length() - 2).c_str()))));
+    }
     return Empty;
 }
 
 Def(Random) {
-    if (para.size()==0)
+    if (para.size() == 0) {
         return ParaList(1, Pair(INTE, Transfer(rand())));
+    }
     int a[2];
-    for (int i=0;i<2;i++)
-        if (para[i].first==REFER)
-            a[i]=p->Int[para[i].second];
-        else
-            a[i]=Transfer(para[i].second);
-    return ParaList(1, Pair(INTE, Transfer(rand()%(a[1]-a[0]+1)+a[0])));
+    for (int i = 0; i < 2; i ++) {
+        if (para[i].first == REFER) {
+            a[i] = p->Int[para[i].second];
+        } else {
+            a[i] = Transfer(para[i].second);
+        }
+    }
+    return ParaList(1, Pair(INTE, Transfer(rand() % (a[1] - a[0] + 1) + a[0])));
 }
 
 ifstream fin;
@@ -97,14 +119,15 @@ ofstream fout;
 Def(ReadFrom) {
     string file;
     GetStr(0, file);
-    if (file=="/dev/stdin") {
+    if (file == "/dev/stdin") {
         fin.close();
         cin.rdbuf(InBuf);
         return True;
     }
     fin.open(file);
-    if (!fin)
+    if (!fin) {
         return False;
+    }
     cin.rdbuf(fin.rdbuf());
     return True;
 }
@@ -112,14 +135,15 @@ Def(ReadFrom) {
 Def(PrintTo) {
     string file;
     GetStr(0, file);
-    if (file=="/dev/stdout") {
+    if (file == "/dev/stdout") {
         fout.close();
         cout.rdbuf(OutBuf);
         return True;
     }
     fout.open(file);
-    if (!fout)
+    if (!fout) {
         return False;
+    }
     cout.rdbuf(fout.rdbuf());
     return True;
 }
@@ -129,8 +153,9 @@ Def(Exec) {
     GetStr(0, e);
     ifstream fin;
     fin.open(e);
-    if (fin)
+    if (fin) {
         p->Exec(fin);
+    }
     fin.close();
     return Empty;
 }
@@ -146,8 +171,9 @@ Def(Sub) {
     string a, b;
     GetStr(0, a);
     GetStr(1, b);
-    if (b.find(a)!=b.npos)
+    if (b.find(a) != b.npos) {
         return True;
+    }
     return False;
 }
 

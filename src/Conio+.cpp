@@ -59,12 +59,12 @@ int getch(void) {
      return ch;
 }
 
-void gotoxy(int x,int y) {
-	printf("\033[%d;%dH",y,2*x-1);
+void gotoxy(int x, int y) {
+	printf("\033[%d;%dH", y, 2 * x - 1);
 }
 
-void gotoxy_origin(int x,int y) {
-	printf("\033[%d;%dH",y,x);
+void gotoxy_origin(int x, int y) {
+	printf("\033[%d;%dH", y, x);
 }
 
 void hidecursor() {
@@ -75,9 +75,10 @@ void unhidecursor() {
 	printf("\033[?25h");
 }
 
-void color(int a,int b) {
-    if (bakfg != a || bakbg != b)
-    	printf("\033[%dm\033[%dm",b+40,a+30);
+void color(int a, int b) {
+    if (bakfg != a || bakbg != b) {
+    	printf("\033[%dm\033[%dm", b + 40, a + 30);
+    }
     bakfg = a;
     bakbg = b;
 }
@@ -117,36 +118,36 @@ using namespace std;
 #define YELLOW 14
 #define WHITE 15
 
-#define on_(x,y) (x+16*y)
+#define on_(x, y) (x + 16 * y)
 
-void gotoxy(int x,int y) {
-    x=2*x-1;
+void gotoxy(int x, int y) {
+    x = 2 * x - 1;
 	COORD c;
-	c.X=x-1;
-	c.Y=y-1;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
+	c.X = x - 1;
+	c.Y = y - 1;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
 }
 
-void gotoxy_origin(int x,int y) {
+void gotoxy_origin(int x, int y) {
 	COORD c;
-	c.X=x-1;
-	c.Y=y-1;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
+	c.X = x - 1;
+	c.Y = y - 1;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
 }
 
 void hidecursor() {
 	CONSOLE_CURSOR_INFO cursor_info = {1, 0};
-	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE),&cursor_info);
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
 }
 
 void unhidecursor() {
 	CONSOLE_CURSOR_INFO cursor_info = {1, 25};
-	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE),&cursor_info);
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
 }
 
-void color(int a,int b) {
+void color(int a, int b) {
     if (bakfg != a || bakbg != b)
-    	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),on_(a,b));
+    	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), on_(a, b));
     bakfg = a;
     bakbg = b;
 }

@@ -8,7 +8,7 @@ class BlockType {
         int fg, bg;
         string text;
     public:
-        int crossable=1;
+        int crossable = 1;
         int id;
         BlockType() {}
         BlockType(int fg, int bg, string text): fg(fg), bg(bg), text(text) {}
