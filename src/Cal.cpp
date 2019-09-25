@@ -14,8 +14,7 @@
 Map Main;
 Interpreter exec;
 map<int, function<void(Map *m)> > Keys;
-typedef string SingleEvent[45][45];
-map<int, SingleEvent> Events;
+map<int, map<int, map<int, string>>> Events;
 BlockType Null(BLACK, WHITE, "  ", true, 0);
 BlockType Wall(BLACK, BLUE, "  ", false, 1);
 BlockType Stair(BLACK, RED, "  ", true, 2);
@@ -87,8 +86,10 @@ void LocationMoved(int bakx, int baky, Map *m) {
                     if (!(i<1||i>40||j<1||j>20)) {
                         if ( (i>=m->locx-horizon && i<=m->locx+horizon && j>=m->locy-horizon && j<=m->locy+horizon) &&
                             ((! (i>=bakx-horizon && i<=bakx+horizon && j>=baky-horizon && j<=baky+horizon))) ) {
+                            m->fl[m->locz].explored[i][j] = 1;
                             m->fl[m->locz].Show(i, j);
                         } else if (! (i>=m->locx-horizon && i<=m->locx+horizon && j>=m->locy-horizon && j<=m->locy+horizon)){
+                            m->fl[m->locz].explored[i][j] = 0;
                             gotoxy(i, j);
                             Dark.Show();
                         }
