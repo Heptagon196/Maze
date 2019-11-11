@@ -1,7 +1,7 @@
 .SILENT:
-FLAG = --std=c++11 -Dlinux
+FLAG = --std=c++17 -Dlinux
 CPP = g++
-DEPENDENCIES = ./src/Interpreter.o ./src/Conio+.o ./src/Cal.o ./src/Bag.o ./src/Creature.o ./src/InterpreterExt.o ./src/main.o ./src/Map.o
+DEPENDENCIES = ./src/Gos.o ./src/Error.o ./src/Any.o ./src/RPG.o ./src/Map.o ./src/main.o ./src/ConioPlus.o
 ifdef MAKE_RELEASE
 	FLAG += -O2
 endif
@@ -15,47 +15,44 @@ endif
 default:
 	make release
 
-Maze: $(DEPENDENCIES)
-	 echo "[9/9] Building Maze"
-	$(CPP) $(DEPENDENCIES) $(FLAG) -o Maze
+ConsoleRPG: $(DEPENDENCIES)
+	 echo "[8/8] Building ConsoleRPG"
+	$(CPP) $(DEPENDENCIES) $(FLAG) -o ConsoleRPG
 
-./src/Interpreter.o: ./src/Interpreter.cpp
-	echo "[1/9] Compiling ./src/Interpreter.cpp"
-	$(CPP) -c $(FLAG) $< -o ./src/Interpreter.o
-./src/Conio+.o: ./src/Conio+.cpp
-	echo "[2/9] Compiling ./src/Conio+.cpp"
-	$(CPP) -c $(FLAG) $< -o ./src/Conio+.o
-./src/Cal.o: ./src/Cal.cpp
-	echo "[3/9] Compiling ./src/Cal.cpp"
-	$(CPP) -c $(FLAG) $< -o ./src/Cal.o
-./src/Bag.o: ./src/Bag.cpp
-	echo "[4/9] Compiling ./src/Bag.cpp"
-	$(CPP) -c $(FLAG) $< -o ./src/Bag.o
-./src/Creature.o: ./src/Creature.cpp
-	echo "[5/9] Compiling ./src/Creature.cpp"
-	$(CPP) -c $(FLAG) $< -o ./src/Creature.o
-./src/InterpreterExt.o: ./src/InterpreterExt.cpp
-	echo "[6/9] Compiling ./src/InterpreterExt.cpp"
-	$(CPP) -c $(FLAG) $< -o ./src/InterpreterExt.o
-./src/main.o: ./src/main.cpp
-	echo "[7/9] Compiling ./src/main.cpp"
-	$(CPP) -c $(FLAG) $< -o ./src/main.o
+./src/Gos.o: ./src/Gos.cpp
+	echo "[1/8] Compiling ./src/Gos.cpp"
+	$(CPP) -c $(FLAG) $< -o ./src/Gos.o
+./src/Error.o: ./src/Error.cpp
+	echo "[2/8] Compiling ./src/Error.cpp"
+	$(CPP) -c $(FLAG) $< -o ./src/Error.o
+./src/Any.o: ./src/Any.cpp
+	echo "[3/8] Compiling ./src/Any.cpp"
+	$(CPP) -c $(FLAG) $< -o ./src/Any.o
+./src/RPG.o: ./src/RPG.cpp
+	echo "[4/8] Compiling ./src/RPG.cpp"
+	$(CPP) -c $(FLAG) $< -o ./src/RPG.o
 ./src/Map.o: ./src/Map.cpp
-	echo "[8/9] Compiling ./src/Map.cpp"
+	echo "[5/8] Compiling ./src/Map.cpp"
 	$(CPP) -c $(FLAG) $< -o ./src/Map.o
+./src/main.o: ./src/main.cpp
+	echo "[6/8] Compiling ./src/main.cpp"
+	$(CPP) -c $(FLAG) $< -o ./src/main.o
+./src/ConioPlus.o: ./src/ConioPlus.cpp
+	echo "[7/8] Compiling ./src/ConioPlus.cpp"
+	$(CPP) -c $(FLAG) $< -o ./src/ConioPlus.o
 
 clean:
 	echo "Cleaning files"
-	rm -rf ./src/Interpreter.o ./src/Conio+.o ./src/Cal.o ./src/Bag.o ./src/Creature.o ./src/InterpreterExt.o ./src/main.o ./src/Map.o
+	rm -rf ./src/Gos.o ./src/Error.o ./src/Any.o ./src/RPG.o ./src/Map.o ./src/main.o ./src/ConioPlus.o
 install:
-	echo "Installing Maze to /usr/local/bin"
-	cp ./Maze /usr/local/bin/
+	echo "Installing ConsoleRPG to /usr/local/bin"
+	cp ./ConsoleRPG /usr/local/bin/
 debug:
 	echo "Building a debug version"
-	env MAKE_DEBUG=true make Maze
+	env MAKE_DEBUG=true make ConsoleRPG
 static:
 	echo "Building a statically linked version"
-	env MAKE_STATIC=true make Maze
+	env MAKE_STATIC=true make ConsoleRPG
 release:
 	echo "Building a release version"
-	env MAKE_RELEASE=true make Maze
+	env MAKE_RELEASE=true make ConsoleRPG

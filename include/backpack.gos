@@ -1,0 +1,38 @@
+# Backpack module
+backpack := struct();
+backpack.items = list();
+backpack.itemCount = list();
+backpack.addItem = func(x, cnt) {
+    id := this.getItemID(x);
+    if (id != -1) {
+        this.itemCount[id] += cnt;
+        return(0);
+    }
+    push(this.items, x);
+    push(this.itemCount, cnt);
+}
+backpack.getItemID = func(x) {
+    for (i := 0; i < size(this.items); i += 1) {
+        if (this.items[i] == x) {
+            return(i);
+        }
+    }
+    return(-1);
+}
+backpack.getItemCount = func(x) {
+    return(if (tmp := this.getItemID(x) == -1) { 0 } else { this.itemCount[tmp] });
+}
+backpack.chooseItem = func() {
+    if (size(this.items) == 0) {
+        return(0);
+    }
+    clearscreen();
+    tmp := this.items;
+    push(tmp, "Cancel");
+    ret := showMenu("Choose an item", tmp);
+    mapRefresh();
+    if (ret == size(this.items)) {
+        return(-1);
+    }
+    return(ret);
+}

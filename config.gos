@@ -1,0 +1,2 @@
+setGamemode(Torch);
+exec("maps/Select/main.gos");

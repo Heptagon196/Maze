@@ -24,7 +24,7 @@
 *.lib
 
 # Executables
-Maze
+ConsoleRPG
 *.exe
 *.out
 *.app

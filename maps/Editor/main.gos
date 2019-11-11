@@ -1,0 +1,66 @@
+# Map Editor
+setGamemode(Overview);
+NewWall := 0;
+defBlock(NewWall, WHITE, BLUE, "  ", true);
+clearscreen();
+showcursor();
+s := "";
+print("Input the map name: ");
+getline(s);
+hidecursor();
+filename := "maps/" + s + "/maze.map";
+if (!read_from(filename)) {
+    println("File not found.");
+    showcursor();
+    exit(0);
+} else {
+    read_from("/dev/stdin");
+}
+curBlock := func() {
+    return(getBlock(mapX(), mapY()));
+}
+revBlock := func() {
+    return(if (curBlock() == Empty) { NewWall } else { Empty });
+}
+setKeyEvent("r", func() {
+    setBlock(revBlock(), mapX(), mapY());
+});
+setKeyEvent("BPj", func() {
+    type := curBlock();
+    for (i := mapY(); i <= 20; i += 1) {
+        setBlock(type, mapX(), i);
+    }
+});
+setKeyEvent("AHk", func() {
+    type := curBlock();
+    for (i := mapY(); i >= 1; i -= 1) {
+        setBlock(type, mapX(), i);
+    }
+});
+setKeyEvent("DKh", func() {
+    type := curBlock();
+    for (i := mapX(); i >= 1; i -= 1) {
+        setBlock(type, i, mapY());
+    }
+});
+setKeyEvent("CMl", func() {
+    type := curBlock();
+    for (i := mapX(); i <= 40; i += 1) {
+        setBlock(type, i, mapY());
+    }
+});
+setKeyEvent("e", func() {
+    print_to(filename);
+    for (x := 1; x <= 40; x += 1) {
+        for (y := 1; y <= 20; y += 1) {
+            if (getBlock(x, y) == NewWall) {
+                println(x, " ", y);
+            }
+        }
+    }
+    print_to("/dev/stdout");
+    say("Map saved!");
+});
+setMap(s);
+setBlock(NewWall, "maze.map");
+mapInit();

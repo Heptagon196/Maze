@@ -1,0 +1,32 @@
+# Select Menu
+##include include/menu.gos
+if (LINUX) {
+    system("ls maps > .menu_tmp");
+} else {
+    system("dir /a /b maps > .menu_tmp");
+}
+read_from(".menu_tmp");
+k := 0;
+s := list("");
+while (getline(s[k])) {
+    if (s[k] != "Select") {
+        k += 1;
+        push(s, 0);
+    }
+}
+s[k] = "Exit";
+read_from("/dev/stdin");
+if (LINUX) {
+    system("rm .menu_tmp");
+} else {
+    system("del .menu_tmp");
+}
+clearscreen();
+l := showMenu("Maze - Select a map to start", s);
+clearscreen();
+if (l == k) {
+    showcursor();
+    exit(0);
+}
+setMap(s[l]);
+exec("maps/" + s[l] + "/main.gos");

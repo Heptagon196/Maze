@@ -1,8 +1,19 @@
 #ifndef MAZEMAP_H
 #define MAZEMAP_H
-#include "Conio+.h"
 #include <vector>
 #include <functional>
+#include <iostream>
+#include <cstring>
+#if defined(linux) || defined(__APPLE__)
+#include <unistd.h>
+#define Sleep(x) usleep(x * 1000)
+#else
+#include <windows.h>
+#endif
+#include "ConioPlus.h"
+#include "Gos.h"
+using namespace std;
+
 class BlockType {
     private:
         int fg, bg;
@@ -10,14 +21,15 @@ class BlockType {
     public:
         int crossable = 1;
         int id;
-        BlockType() {}
-        BlockType(int fg, int bg, string text): fg(fg), bg(bg), text(text) {}
-        BlockType(int fg, int bg, string text, int crossable): fg(fg), bg(bg), text(text), crossable(crossable) {}
-        BlockType(int fg, int bg, string text, int crossable, int id): fg(fg), bg(bg), text(text), crossable(crossable), id(id) {}
-        void Show();
-        void Rever();
+        BlockType();
+        BlockType(int fg, int bg, string text);
+        BlockType(int fg, int bg, string text, int crossable);
+        BlockType(int fg, int bg, string text, int crossable, int id);
+        void Show() const;
+        void Rever() const;
 };
-static BlockType Dark(BLACK, BLACK, "  ");
+
+static const BlockType Dark(BLACK, BLACK, "  ");
 
 class Floor {
     private:
@@ -37,11 +49,14 @@ class Map {
         vector<Floor> fl;
         int locx, locy, locz;
 
-        vector<function<void(Map*)> > p;
-        void Add(function<void(Map*)> func);
-        Floor& operator [](int i) {
-            return fl[i];
-        }
+        int timePerFrame = 20;
+        unsigned long long framecnt = 0;
+
+        Floor& operator [] (int i);
+        Floor& cur();
+
+        vector<function<void()> > p;
+        void Add(function<void()> func);
         void Exec();
 };
 #endif

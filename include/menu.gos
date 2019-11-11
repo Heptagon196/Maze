@@ -1,0 +1,61 @@
+# Menu module
+showline := func(content, line, selected) {
+    gotoxy(1, line);
+
+    if (selected) {
+        color(BLACK, WHITE);
+    } else {
+        color(WHITE, BLACK);
+    }
+
+    len := strlen(content);
+    a := (80 - len) / 2;
+    for (i := 0; i < a; i += 1) {
+        print(" ");
+    }
+    print(content);
+    for (i := 0; i < 80 - len - a; i += 1) {
+        print(" ");
+    }
+}
+
+showMenu := func(title, content) {
+    if (size(content) == 0) {
+        return(0);
+    }
+    showline(title, 1, false);
+    k := size(content);
+    for (i := 0; i < k; i += 1) {
+        showline(content[i], i + 2, false);
+    }
+    showline(content[0], 2, true);
+    l := 0;
+    bakl := 0;
+    ch := "";
+    while (ch != "\r") {
+        ch = getch();
+        bakl = l;
+        if (ch == "w") {
+            l -= 1;
+        }
+        if (ch == "s") {
+            l += 1;
+        }
+        if (ch == "q") {
+            showcursor();
+            l = k - 1;
+            break;
+        }
+        if (l == k) {
+            l = 0;
+        }
+        if (l == -1) {
+            l = k - 1;
+        }
+        if (l != bakl) {
+            showline(content[bakl], bakl + 2, false);
+            showline(content[l], l + 2, true);
+        }
+    }
+    return(l);
+}

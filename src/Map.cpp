@@ -1,14 +1,17 @@
-#include <iostream>
-#include <cstring>
-#include "Conio+.h"
 #include "Map.h"
 //BlockType
-void BlockType::Show() {
+
+BlockType::BlockType() {}
+BlockType::BlockType(int fg, int bg, string text): fg(fg), bg(bg), text(text) {}
+BlockType::BlockType(int fg, int bg, string text, int crossable): fg(fg), bg(bg), text(text), crossable(crossable) {}
+BlockType::BlockType(int fg, int bg, string text, int crossable, int id): fg(fg), bg(bg), text(text), crossable(crossable), id(id) {}
+
+void BlockType::Show() const {
     color(fg, bg);
     cout << text;
 }
 
-void BlockType::Rever() {
+void BlockType::Rever() const {
     color(fg, bg);
     cout << text;
 }
@@ -55,14 +58,29 @@ void Floor::Rever(int x, int y) {
 }
 
 //Map
-void Map::Add(function<void(Map*)> func) {
+void Map::Add(function<void()> func) {
     p.push_back(func);
 }
 
 void Map::Exec() {
     while (true) {
         for (int i = 0; i < p.size(); i ++) {
-            p[i](this);
+            p[i]();
         }
+        framecnt ++;
+        gotoxy(1, 23);
+        Sleep(timePerFrame);
+        gotoxy(1, 23);
+        color(BLACK, WHITE);
+        cout << framecnt << endl;
+        //puts(" ");
     }
+}
+
+Floor& Map::operator [] (int i) {
+    return fl[i];
+}
+
+Floor& Map::cur() {
+    return fl[locz];
 }
