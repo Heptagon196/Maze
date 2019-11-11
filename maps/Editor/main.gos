@@ -1,5 +1,6 @@
 # Map Editor
 setGamemode(Overview);
+# 定义新方块，蓝色，可穿过
 NewWall := 0;
 defBlock(NewWall, WHITE, BLUE, "  ", true);
 clearscreen();

@@ -72,8 +72,8 @@ void Map::Exec() {
         Sleep(timePerFrame);
         gotoxy(1, 23);
         color(BLACK, WHITE);
-        cout << framecnt << endl;
-        //puts(" ");
+        //cout << framecnt << endl;
+        puts(" ");
     }
 }
 

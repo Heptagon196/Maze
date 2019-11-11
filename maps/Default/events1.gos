@@ -29,7 +29,7 @@ setEvent(40, 19, 0, func() {
         hasAddedLevel = true;
         addLevel();
         setPos(1, 1, 1);
-        setBlock(NewWall, "maze2.map");
+        setBlock(Wall, "maze2.map");
         mapRefresh();
     }
 });

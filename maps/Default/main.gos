@@ -3,8 +3,7 @@
 ##include include/backpack.gos
 bag := backpack;
 NewWall := 0;
-defBlock(NewWall, WHITE, BLUE, "  ", true);
-setBlock(NewWall, "maze.map");
+setBlock(Wall, "maze.map");
 details := list();
 setKeyEvent("e", func() {
     i := bag.chooseItem();

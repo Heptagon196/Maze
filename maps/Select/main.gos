@@ -28,5 +28,6 @@ if (l == k) {
     showcursor();
     exit(0);
 }
+# setMap 设置地图名，决定了从哪个目录下读取地图文件(maze.map)
 setMap(s[l]);
 exec("maps/" + s[l] + "/main.gos");

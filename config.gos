@@ -1,2 +1,9 @@
+# 游戏模式有三种，Overview，Explore，Torch
+# Overview 显示整个地图
+# Explore 显示已探索区域
+# Torch 只显示附近区域
 setGamemode(Torch);
+# 视野
+setHorizon(2);
+# 调用脚本
 exec("maps/Select/main.gos");
