@@ -68,12 +68,10 @@ void Map::Exec() {
             p[i]();
         }
         framecnt ++;
-        gotoxy(1, 23);
         Sleep(timePerFrame);
         gotoxy(1, 23);
-        color(BLACK, WHITE);
+        color(WHITE, WHITE);
         //cout << framecnt << endl;
-        puts(" ");
     }
 }
 
