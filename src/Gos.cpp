@@ -958,7 +958,7 @@ Any Gos::BuildGos(const char filename[]) {
     stack<pair<int, string>> result, tmp, orig;
     while (true) {
         auto i = get_token();
-        if (i.second.length() > 0 && i.second[0] == EOF) {
+        if (i.second.length() > 0 && i.second[0] == (char)EOF) {
             fps.pop();
             if (fps.empty()) {
                 break;
