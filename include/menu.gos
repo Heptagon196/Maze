@@ -1,13 +1,5 @@
 # Menu module
-showline := func(content, line, selected) {
-    gotoxy(1, line);
-
-    if (selected) {
-        color(BLACK, WHITE);
-    } else {
-        color(WHITE, BLACK);
-    }
-
+middleprint := func(content) {
     len := strlen(content);
     a := (80 - len) / 2;
     for (i := 0; i < a; i += 1) {
@@ -17,6 +9,18 @@ showline := func(content, line, selected) {
     for (i := 0; i < 80 - len - a; i += 1) {
         print(" ");
     }
+}
+
+showline := func(content, line, selected) {
+    gotoxy(1, line);
+
+    if (selected) {
+        color(BLACK, WHITE);
+    } else {
+        color(WHITE, BLACK);
+    }
+
+    middleprint(content);
 }
 
 showMenu := func(title, content) {

@@ -1,0 +1,33 @@
+# Level control module
+StartGame := func(baseWallType) {
+    setBlock(baseWallType, "maze0.map");
+    mapInit();
+}
+EndGame := func() {
+    showcursor();
+    clearscreen();
+    exit(0);
+}
+CreateLevel := func(id, baseWallType) {
+    if (id != levelCount()) {
+        say("Error: Wrong level id.");
+        gotoxy(1, 22);
+        exit(1);
+    }
+    addLevel();
+    setPos(1, 1, id);
+    setBlock(baseWallType, "maze" + string(id) + ".map");
+    mapRefresh();
+}
+EnterLevel := func(id) {
+    if (id >= levelCount()) {
+        say("Error: Wrong level id.");
+        gotoxy(1, 22);
+        exit(1);
+    }
+    setPos(1, 1, id);
+    mapRefresh();
+}
+HasAddedLevel := func(id) {
+    return(id < levelCount());
+}

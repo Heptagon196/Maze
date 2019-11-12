@@ -7,8 +7,7 @@ setEvent(1, 15, 0, func() {
     if (bag.getItemCount("Key") == 0 && !hasTakenKey) {
         say("你找到了一把钥匙。");
         hasTakenKey = true;
-        bag.addItem("Key", 1);
-        push(details, "一把传奇的钥匙，可惜生锈了。");
+        bag.addItem("Key", 1, "一把传奇的钥匙，可惜生锈了。");
     }
 });
 setEvent(39, 17, 0, func() {
@@ -18,18 +17,14 @@ setEvent(39, 17, 0, func() {
     if (bag.getItemCount("Key") == 0) {
         say("路被堵住了，钥匙在左下角。")
     } else {
-        say("门开了。")
+        say("门开了。");
+        bag.addItem("Key", -1);
         setBlock(Empty, 39, 18);
     }
 });
-hasAddedLevel := false;
 setEvent(40, 19, 0, func() {
-    if (!hasAddedLevel) {
+    if (!HasAddedLevel(1)) {
         say("你走进了另一个迷宫。");
-        hasAddedLevel = true;
-        addLevel();
-        setPos(1, 1, 1);
-        setBlock(Wall, "maze2.map");
-        mapRefresh();
+        CreateLevel(1, NormalWall);
     }
 });

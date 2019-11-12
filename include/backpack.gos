@@ -2,14 +2,21 @@
 backpack := struct();
 backpack.items = list();
 backpack.itemCount = list();
-backpack.addItem = func(x, cnt) {
+backpack.details = list();
+backpack.addItem = func(x, cnt, detail) {
     id := this.getItemID(x);
     if (id != -1) {
         this.itemCount[id] += cnt;
+        if (this.itemCount[id] == 0) {
+            remove(this.items, id);
+            remove(this.itemCount, id);
+            remove(this.details, id);
+        }
         return(0);
     }
     push(this.items, x);
     push(this.itemCount, cnt);
+    push(this.details, detail);
 }
 backpack.getItemID = func(x) {
     for (i := 0; i < size(this.items); i += 1) {
@@ -22,9 +29,20 @@ backpack.getItemID = func(x) {
 backpack.getItemCount = func(x) {
     return(if (tmp := this.getItemID(x) == -1) { 0 } else { this.itemCount[tmp] });
 }
+backpack.getIDName = func(x) {
+    return(this.items[x]);
+}
+backpack.getItemDetail = func(x) {
+    if (is_string(x)) {
+        return(this.details[this.getItemID(x)]);
+    }
+    if (is_int(x)) {
+        return(this.details[x]);
+    }
+}
 backpack.chooseItem = func() {
     if (size(this.items) == 0) {
-        return(0);
+        return(-1);
     }
     clearscreen();
     tmp := this.items;

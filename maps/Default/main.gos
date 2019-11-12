@@ -1,16 +1,17 @@
 # Default map
-##include include/menu.gos
-##include include/backpack.gos
+##include include/base.gos
 bag := backpack;
-NewWall := 0;
-setBlock(Wall, "maze.map");
+CrossableWall := 0;
+defBlock(CrossableWall, WHITE, BLUE, "  ", true);
+NormalWall := CrossableWall;
+#NormalWall := Wall;
 details := list();
 setKeyEvent("e", func() {
     i := bag.chooseItem();
-    if (i != -1 && i < size(details)) {
-        say(details[i]);
+    if (i != -1) {
+        say(bag.getItemDetail(i));
     }
 });
 ##include maps/Default/events1.gos
 ##include maps/Default/events2.gos
-mapInit();
+StartGame(NormalWall);
