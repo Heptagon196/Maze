@@ -1,6 +1,0 @@
-# Events on level 2
-setEvent(40, 19, 1, func() {
-    say("你走出了迷宫。按任意键退出。");
-    getch();
-    EndGame();
-});
