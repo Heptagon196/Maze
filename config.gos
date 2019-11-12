@@ -12,5 +12,14 @@ if (LINUX) {
 } else {
     global(Editor, "code");
 }
+# 背景变白色
+color(BLACK, WHITE);
+println();
+clearscreen();
 # 调用脚本
-exec("maps/Select/main.gos");
+if (size(args) == 1) {
+    exec("maps/Select/main.gos");
+} else {
+    setMap(args[1]);
+    exec("maps/" + args[1] + "/main.gos", args);
+}

@@ -46,6 +46,9 @@ backpack.chooseItem = func() {
     }
     clearscreen();
     tmp := this.items;
+    for (i := 0; i < size(this.items); i += 1) {
+        tmp[i] += " x " + string(this.itemCount[i]);
+    }
     push(tmp, "Cancel");
     ret := showMenu("Choose an item", tmp);
     mapRefresh();

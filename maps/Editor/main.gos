@@ -1,5 +1,5 @@
 # Map Editor
-# wsad 移动，r 切换当前方块，hjkl 批量复制当前位置方块，p 保存，e 编辑在当前位置发生事件（默认调用 vim），m 编辑地图的主文件
+# wsad 移动，r 切换当前方块，hjkl 批量复制当前位置方块，p 保存，e 编辑在当前位置发生事件（默认调用 vim），m 编辑地图的主文件，o 切换关卡
 setGamemode(Overview);
 # 定义新方块，蓝色，可穿过
 NewWall := 0;
@@ -7,9 +7,14 @@ defBlock(NewWall, WHITE, BLUE, "  ", true);
 
 clearscreen();
 showcursor();
+
 s := "";
-print("Input the map name you want to create or edit: ");
-getline(s);
+if (size(args) > 2) {
+    s = args[2];
+} else {
+    print("Input the map name you want to create or edit: ");
+    getline(s);
+}
 mainfile := "maps/" + s + "/main.gos";
 num := 1.0;
 if (!read_from(mainfile)) {
@@ -20,7 +25,7 @@ if (!read_from(mainfile)) {
     print_to(mainfile);
     println("# " + s + "\n##include include/base.gos\nStartGame(Wall);");
     print_to("/dev/stdout");
-    num = 0;
+    num = "0";
     print_to("maps/" + s + "/maze0.map");
     for (i := 1; i <= 20; i += 1) {
         if (i > 2) {
@@ -40,13 +45,18 @@ if (!read_from(mainfile)) {
     getch();
 } else {
     read_from("/dev/stdin");
-    print("Input the level number: ");
-    while (!is_int(num)) {
-        read(num);
+    if (size(args) > 3) {
+        num = args[3];
+    } else {
+        print("Input the level number: ");
+        while (!is_int(num)) {
+            read(num);
+        }
+        num = string(num);
     }
 }
 hidecursor();
-filename := "maps/" + s + "/maze" + string(num) + ".map";
+filename := "maps/" + s + "/maze" + num + ".map";
 if (!read_from(filename)) {
     say("File not found. Create a temporary map.");
     for (i := 1; i <= 20; i += 1) {
@@ -63,7 +73,7 @@ if (!read_from(filename)) {
     }
 } else {
     setMap(s);
-    setBlock(NewWall, "maze" + string(num) + ".map");
+    setBlock(NewWall, "maze" + num + ".map");
 }
 read_from("/dev/stdin");
 curBlock := func() {
@@ -100,18 +110,18 @@ setKeyEvent("CMl", func() {
     }
 });
 setKeyEvent("e", func() {
-    eventfile := "maps/" + s + "/events" + string(num) + ".gos";
+    eventfile := "maps/" + s + "/events" + num + ".gos";
     if (!read_from(eventfile)) {
         append_to(mainfile);
         println("##include " + eventfile);
         print_to("/dev/stdout");
         print_to(eventfile);
-        println("# Events on level " + string(num));
+        println("# Events on level " + num);
         print_to("/dev/stdout");
     }
     read_from("/dev/stdin");
     append_to(eventfile);
-    println("setEvent(", mapX(), ", ", mapY(), ", ", mapZ(), ", func() {\n    # Add your event here\n});");
+    println("setEvent(", mapX(), ", ", mapY(), ", ", num, ", func() {\n    # Add your event here\n});");
     print_to("/dev/stdout");
     system(path(Editor + " " + eventfile));
     hidecursor();
@@ -131,5 +141,23 @@ setKeyEvent("p", func() {
     }
     print_to("/dev/stdout");
     say("Map saved!");
+});
+setKeyEvent("o", func() {
+    gotoxy(1, 21);
+    showcursor();
+    color(BLACK, WHITE);
+    print("Which level would you like to switch to? ");
+    l := 1.0;
+    while (!is_int(l)) {
+        read(l);
+    }
+    l = string(l);
+    if (l != num) {
+        if (LINUX) {
+            exit(system("./ConsoleRPG Editor " + s + " " + l));
+        } else {
+            exit(system("ConsoleRPG.exe Editor " + s + " " + l));
+        }
+    }
 });
 mapInit();

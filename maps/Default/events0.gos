@@ -25,6 +25,6 @@ setEvent(39, 17, 0, func() {
 setEvent(40, 19, 0, func() {
     if (!HasAddedLevel(1)) {
         say("你走进了另一个迷宫。");
-        CreateLevel(1, NormalWall);
+        CreateLevel(1, NormalWall, 1, 1);
     }
 });

@@ -9,6 +9,7 @@ middleprint := func(content) {
     for (i := 0; i < 80 - len - a; i += 1) {
         print(" ");
     }
+    println();
 }
 
 showline := func(content, line, selected) {

@@ -419,11 +419,11 @@ void Init() {
     });
 }
 
-int RPGStart(vector<string> args) {
+int RPGStart(vector<Any> args) {
     hidecursor();
     Init();
     exec = Gos::BuildGos("config.gos");
-    Gos::ExecuteFunc(exec, {});
+    Gos::ExecuteFunc(exec, {args});
     Main.Exec();
     return 0;
 }

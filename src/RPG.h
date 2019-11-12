@@ -7,5 +7,5 @@
 #include <iostream>
 #include "Gos.h"
 #include "Map.h"
-int RPGStart(vector<string> args);
+int RPGStart(vector<Any> args);
 #endif

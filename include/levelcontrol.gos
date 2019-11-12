@@ -8,24 +8,22 @@ EndGame := func() {
     clearscreen();
     exit(0);
 }
-CreateLevel := func(id, baseWallType) {
+CreateLevel := func(id, baseWallType, x, y) {
     if (id != levelCount()) {
-        say("Error: Wrong level id.");
-        gotoxy(1, 22);
-        exit(1);
+        say("Error: Wrong level id: ", id);
+        EndGame();
     }
     addLevel();
-    setPos(1, 1, id);
+    setPos(x, y, id);
     setBlock(baseWallType, "maze" + string(id) + ".map");
     mapRefresh();
 }
-EnterLevel := func(id) {
+EnterLevel := func(id, x, y) {
     if (id >= levelCount()) {
-        say("Error: Wrong level id.");
-        gotoxy(1, 22);
-        exit(1);
+        say("Error: Wrong level id: ", id);
+        EndGame();
     }
-    setPos(1, 1, id);
+    setPos(x, y, id);
     mapRefresh();
 }
 HasAddedLevel := func(id) {
