@@ -16,7 +16,7 @@ if (!read_from(mainfile)) {
     read_from("/dev/stdin");
     color(BLACK, WHITE);
     println("No such map. Creating a new one.");
-    system("mkdir maps/" + s);
+    system(path("mkdir maps/" + s));
     print_to(mainfile);
     println("# " + s + "\n##include include/base.gos\nStartGame(Wall);");
     print_to("/dev/stdout");
@@ -113,11 +113,11 @@ setKeyEvent("e", func() {
     append_to(eventfile);
     println("setEvent(", mapX(), ", ", mapY(), ", ", mapZ(), ", func() {\n    # Add your event here\n});");
     print_to("/dev/stdout");
-    system(Editor + " " + eventfile);
+    system(path(Editor + " " + eventfile));
     hidecursor();
 });
 setKeyEvent("m", func() {
-    system(Editor + " " + mainfile);
+    system(path(Editor + " " + mainfile));
     hidecursor();
 });
 setKeyEvent("p", func() {

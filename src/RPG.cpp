@@ -356,6 +356,23 @@ Func(Say) {
     return nullptr;
 }
 
+Func(Path) {
+#if defined(linux) || defined(__APPLE__)
+    return args[0];
+#else
+    string s = args[0].String();
+    string ans;
+    for (const auto& ch : s) {
+        if (ch == '/') {
+            ans.push_back('\\');
+        } else {
+            ans.push_back(ch);
+        }
+    }
+    return ans;
+#endif
+}
+
 void Init() {
     Gos::ImportDefaultLib();
 
@@ -396,6 +413,7 @@ void Init() {
         {"addLevel", AddFloor},
         {"levelCount", FloorCount},
         {"say", Say},
+        {"path", Path},
         {"setEvent", AddEvent},
         {"setKeyEvent", AddKey},
     });
