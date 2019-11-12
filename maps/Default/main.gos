@@ -3,8 +3,8 @@
 bag := backpack;
 CrossableWall := 0;
 defBlock(CrossableWall, WHITE, BLUE, "  ", true);
-NormalWall := CrossableWall;
-#NormalWall := Wall;
+#NormalWall := CrossableWall;
+NormalWall := Wall;
 details := list();
 setKeyEvent("e", func() {
     i := bag.chooseItem();
