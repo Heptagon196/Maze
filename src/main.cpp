@@ -2,7 +2,8 @@
 
 int main(int argc, char* argv[]) {
     srand(time(NULL));
-#ifndef linux
+#if defined(linux) || defined(__APPLE__)
+#else
     system("mode con lines=40");
     system("mode con cols=81");
 #endif

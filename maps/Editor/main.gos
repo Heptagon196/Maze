@@ -1,22 +1,71 @@
 # Map Editor
+# wsad 移动，r 切换当前方块，hjkl 批量复制当前位置方块，p 保存，e 编辑在当前位置发生事件（默认调用 vim），m 编辑地图的主文件
 setGamemode(Overview);
 # 定义新方块，蓝色，可穿过
 NewWall := 0;
 defBlock(NewWall, WHITE, BLUE, "  ", true);
+
 clearscreen();
 showcursor();
 s := "";
-print("Input the map name: ");
+print("Input the map name you want to create or edit: ");
 getline(s);
-hidecursor();
-filename := "maps/" + s + "/maze.map";
-if (!read_from(filename)) {
-    println("File not found.");
-    showcursor();
-    exit(0);
+mainfile := "maps/" + s + "/main.gos";
+num := 1.0;
+if (!read_from(mainfile)) {
+    read_from("/dev/stdin");
+    color(BLACK, WHITE);
+    println("No such map. Creating a new one.");
+    system("mkdir maps/" + s);
+    print_to(mainfile);
+    println("# " + s + "\n##include include/base.gos\nStartGame(Wall);");
+    print_to("/dev/stdout");
+    num = 0;
+    print_to("maps/" + s + "/maze0.map");
+    for (i := 1; i <= 20; i += 1) {
+        if (i > 2) {
+            println(1, " ", i);
+        }
+        println(40, " ", i);
+    }
+    for (i := 1; i <= 40; i += 1) {
+        if (i > 2) {
+            println(i, " ", 1);
+        }
+        println(i, " ", 20);
+    }
+    print_to("/dev/stdout");
+    print("Press any key to continue.");
+    hidecursor();
+    getch();
 } else {
     read_from("/dev/stdin");
+    print("Input the level number: ");
+    while (!is_int(num)) {
+        read(num);
+    }
 }
+hidecursor();
+filename := "maps/" + s + "/maze" + string(num) + ".map";
+if (!read_from(filename)) {
+    say("File not found. Create a temporary map.");
+    for (i := 1; i <= 20; i += 1) {
+        if (i > 2) {
+            setBlock(NewWall, 1, i);
+        }
+        setBlock(NewWall, 40, i);
+    }
+    for (i := 1; i <= 40; i += 1) {
+        if (i > 2) {
+            setBlock(NewWall, i, 1);
+        }
+        setBlock(NewWall, i, 20);
+    }
+} else {
+    setMap(s);
+    setBlock(NewWall, "maze" + string(num) + ".map");
+}
+read_from("/dev/stdin");
 curBlock := func() {
     return(getBlock(mapX(), mapY()));
 }
@@ -28,29 +77,50 @@ setKeyEvent("r", func() {
 });
 setKeyEvent("BPj", func() {
     type := curBlock();
-    for (i := mapY(); i <= 20; i += 1) {
+    for (i := mapY() + 1; i <= 20; i += 1) {
         setBlock(type, mapX(), i);
     }
 });
 setKeyEvent("AHk", func() {
     type := curBlock();
-    for (i := mapY(); i >= 1; i -= 1) {
+    for (i := mapY() - 1; i >= 1; i -= 1) {
         setBlock(type, mapX(), i);
     }
 });
 setKeyEvent("DKh", func() {
     type := curBlock();
-    for (i := mapX(); i >= 1; i -= 1) {
+    for (i := mapX() - 1; i >= 1; i -= 1) {
         setBlock(type, i, mapY());
     }
 });
 setKeyEvent("CMl", func() {
     type := curBlock();
-    for (i := mapX(); i <= 40; i += 1) {
+    for (i := mapX() + 1; i <= 40; i += 1) {
         setBlock(type, i, mapY());
     }
 });
 setKeyEvent("e", func() {
+    eventfile := "maps/" + s + "/events" + string(num) + ".gos";
+    if (!read_from(eventfile)) {
+        append_to(mainfile);
+        println("##include " + eventfile);
+        print_to("/dev/stdout");
+        print_to(eventfile);
+        println("# Events on level " + string(num));
+        print_to("/dev/stdout");
+    }
+    read_from("/dev/stdin");
+    append_to(eventfile);
+    println("setEvent(", mapX(), ", ", mapY(), ", ", mapZ(), ", func() {\n    # Add your event here\n});");
+    print_to("/dev/stdout");
+    system(Editor + " " + eventfile);
+    hidecursor();
+});
+setKeyEvent("m", func() {
+    system(Editor + " " + mainfile);
+    hidecursor();
+});
+setKeyEvent("p", func() {
     print_to(filename);
     for (x := 1; x <= 40; x += 1) {
         for (y := 1; y <= 20; y += 1) {
@@ -62,6 +132,4 @@ setKeyEvent("e", func() {
     print_to("/dev/stdout");
     say("Map saved!");
 });
-setMap(s);
-setBlock(NewWall, "maze.map");
 mapInit();

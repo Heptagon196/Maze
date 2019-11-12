@@ -323,9 +323,26 @@ map<string, function<Any(vector<Any>)>> funcs = {
         cout.rdbuf(fout.rdbuf());
         return 1;
     }},
+    {"append_to", Func {
+        if (args[0].String() == "/dev/stdout") {
+            fout.close();
+            cout.rdbuf(OutBuf);
+            return 1;
+        }
+        fout.open(args[0].String(), ios::app);
+        if (!fout) {
+            return 0;
+        }
+        cout.rdbuf(fout.rdbuf());
+        return 1;
+    }},
     {"ref", Func {
         return (Reference){args[0].getRef()};
-    }}
+    }},
+    {"global", Func {
+        args[0].Assign(args[1]);
+        return nullptr;
+    }},
 };
 
 map<string, bool> keywords = {
@@ -530,13 +547,21 @@ class AST {
             var[name].SetConst();
         }
         Any& getVar(string name) {
-            if ((fa->element.first == is_func || fa->element.first == is_op) && fa->element.second == ":=" && this == fa->node[0]) {
-                if (fa->fa->var.find(name) == fa->fa->var.end()) {
-                    fa->fa->var[name] = 0;
-                }
-                return fa->fa->var[name];
-            }
             AST* cur = this;
+            if ((fa->element.first == is_func || fa->element.first == is_op) && this == fa->node[0]) {
+                if (fa->element.second == ":=") {
+                    if (fa->fa->var.find(name) == fa->fa->var.end()) {
+                        fa->fa->var[name] = 0;
+                    }
+                    return fa->fa->var[name];
+                } else if (fa->element.second == "global") {
+                    while (cur != cur->fa) {
+                        cur = cur->fa;
+                    }
+                    cur->var[name] = 0;
+                    return cur->var[name];
+                }
+            }
             while (cur != cur->fa) {
                 if (cur->var.find(name) != cur->var.end()) {
                     return cur->var[name];
@@ -970,7 +995,7 @@ Any Gos::BuildGos(const char filename[]) {
     stack<pair<int, string>> result, tmp, orig;
     while (true) {
         auto i = get_token();
-        if (i.second.length() > 0 && i.second[0] == (char)EOF) {
+        if (i.second.length() > 0 && i.second[0] == EOF) {
             fps.pop();
             if (fps.empty()) {
                 break;

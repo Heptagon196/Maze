@@ -12,6 +12,6 @@ setKeyEvent("e", func() {
         say(bag.getItemDetail(i));
     }
 });
-##include maps/Default/events1.gos
-##include maps/Default/events2.gos
 StartGame(NormalWall);
+##include maps/Default/events0.gos
+##include maps/Default/events1.gos

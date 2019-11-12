@@ -25,7 +25,10 @@ int print, horizon = 2;
 void Exit() {
     gotoxy(1, 21);
     color(BLACK, WHITE);
-    puts("Are you sure you want to exit? [Y/n]");
+    printf("Are you sure you want to exit? [Y/n]");
+    for (int i = 0; i < 240; i ++) {
+        putchar(' ');
+    }
     char ch = getch();
     if (ch == 'Y' || ch == 'y') {
         gotoxy(1, 1);

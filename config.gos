@@ -5,5 +5,8 @@
 setGamemode(Torch);
 # 视野
 setHorizon(2);
+# 指定 Editor 地图所使用的编辑器
+# 用 := 定义时只会是本脚本内有效的局部变量，要让其他脚本访问需使用 global 来定义
+global(Editor, "vim");
 # 调用脚本
 exec("maps/Select/main.gos");
