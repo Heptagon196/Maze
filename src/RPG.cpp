@@ -134,9 +134,6 @@ void HideMessage() {
 #define Func(name) Any name(vector<Any> args)
 
 Func(AddEvent) {
-    if (args.size() < 3) {
-        Error("Unable to add an event.");
-    }
     int x = args[0].Int();
     int y = args[1].Int();
     int z = Main.locz;
