@@ -355,10 +355,10 @@ Func(Say) {
 
 Func(Path) {
 #if defined(linux) || defined(__APPLE__)
-    return args[0];
+    return (string)("\"" + args[0].String() + "\"");
 #else
     string s = args[0].String();
-    string ans;
+    string ans = "\"";
     for (const auto& ch : s) {
         if (ch == '/') {
             ans.push_back('\\');
@@ -366,6 +366,7 @@ Func(Path) {
             ans.push_back(ch);
         }
     }
+    ans.push_back('\"');
     return ans;
 #endif
 }

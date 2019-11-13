@@ -28,3 +28,6 @@ ConsoleRPG
 *.exe
 *.out
 *.app
+
+# Others
+maps/Editor/mark

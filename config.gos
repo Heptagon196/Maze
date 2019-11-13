@@ -17,6 +17,7 @@ color(BLACK, WHITE);
 println();
 clearscreen();
 # 调用脚本
+# 带命令行参数启动时打开指定地图
 if (size(args) == 1) {
     exec("maps/Select/main.gos");
 } else {

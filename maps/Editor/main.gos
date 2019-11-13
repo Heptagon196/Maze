@@ -8,6 +8,16 @@ defBlock(NewWall, WHITE, BLUE, "  ", true);
 clearscreen();
 showcursor();
 
+if (!read_from("maps/Editor/mark")) {
+    print_to("maps/Editor/mark");
+    println("This file marks that you have watched the tutorial.");
+    print_to("/dev/stdout");
+    println("wsad 移动，r 切换当前方块，hjkl 批量复制当前位置方块，p 保存，e 编辑在当前位置发生事件（默认调用 vim），m 编辑地图的主文件，o 切换关卡");
+    println("按任意键继续");
+    getch();
+}
+read_from("/dev/stdin");
+
 s := "";
 if (size(args) > 2) {
     s = args[2];
@@ -21,7 +31,7 @@ if (!read_from(mainfile)) {
     read_from("/dev/stdin");
     color(BLACK, WHITE);
     println("No such map. Creating a new one.");
-    system(path("mkdir maps/" + s));
+    system("mkdir " + path("maps/" + s));
     print_to(mainfile);
     println("# " + s + "\n##include include/base.gos\nStartGame(Wall);");
     print_to("/dev/stdout");
@@ -123,11 +133,11 @@ setKeyEvent("e", func() {
     append_to(eventfile);
     println("setEvent(", mapX(), ", ", mapY(), ", ", num, ", func() {\n    # Add your event here\n});");
     print_to("/dev/stdout");
-    system(path(Editor + " " + eventfile));
+    system(Editor + " " + path(eventfile));
     hidecursor();
 });
 setKeyEvent("m", func() {
-    system(path(Editor + " " + mainfile));
+    system(Editor + " " + path(mainfile));
     hidecursor();
 });
 setKeyEvent("p", func() {

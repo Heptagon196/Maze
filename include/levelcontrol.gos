@@ -26,6 +26,13 @@ EnterLevel := func(id, x, y) {
     setPos(x, y, id);
     mapRefresh();
 }
+SetEntryTo := func(id, baseWallType, x, y) {
+    if (HasAddedLevel(id)) {
+        EnterLevel(id, x, y);
+    } else {
+        CreateLevel(id, baseWallType, x, y);
+    }
+}
 HasAddedLevel := func(id) {
     return(id < levelCount());
 }
