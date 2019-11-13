@@ -353,6 +353,23 @@ Func(Say) {
     return nullptr;
 }
 
+Func(Print) {
+    for (auto& x : args) {
+        if (x.GetType() == typeid(string)) {
+            cout << UTF8ToGBK(x.String());
+        } else {
+            cout << x;
+        }
+    }
+    return nullptr;
+}
+
+Func(Println) {
+    Print(args);
+    cout << endl;
+    return nullptr;
+}
+
 Func(Path) {
 #if defined(linux) || defined(__APPLE__)
     return (string)("\"" + args[0].String() + "\"");
@@ -412,6 +429,8 @@ void Init() {
         {"levelCount", FloorCount},
         {"say", Say},
         {"path", Path},
+        {"print", Print},
+        {"println", Println},
         {"setEvent", AddEvent},
         {"setKeyEvent", AddKey},
     });
