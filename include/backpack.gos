@@ -1,59 +1,60 @@
 # Backpack module
-backpack := struct();
-backpack.items = list();
-backpack.itemCount = list();
-backpack.details = list();
-backpack.addItem = func(x, cnt, detail) {
-    id := this.getItemID(x);
-    if (id != -1) {
-        this.itemCount[id] += cnt;
-        if (this.itemCount[id] == 0) {
-            remove(this.items, id);
-            remove(this.itemCount, id);
-            remove(this.details, id);
+struct (backpack) {
+    backpack.items = list();
+    backpack.itemCount = list();
+    backpack.details = list();
+    backpack.addItem = func(x, cnt, detail) {
+        id := this.getItemID(x);
+        if (id != -1) {
+            this.itemCount[id] += cnt;
+            if (this.itemCount[id] == 0) {
+                remove(this.items, id);
+                remove(this.itemCount, id);
+                remove(this.details, id);
+            }
+            return(0);
         }
-        return(0);
+        push(this.items, x);
+        push(this.itemCount, cnt);
+        push(this.details, detail);
     }
-    push(this.items, x);
-    push(this.itemCount, cnt);
-    push(this.details, detail);
-}
-backpack.getItemID = func(x) {
-    for (i := 0; i < size(this.items); i += 1) {
-        if (this.items[i] == x) {
-            return(i);
+    backpack.getItemID = func(x) {
+        for (i := 0; i < size(this.items); i += 1) {
+            if (this.items[i] == x) {
+                return(i);
+            }
         }
-    }
-    return(-1);
-}
-backpack.getItemCount = func(x) {
-    return(if (tmp := this.getItemID(x) == -1) { 0 } else { this.itemCount[tmp] });
-}
-backpack.getIDName = func(x) {
-    return(this.items[x]);
-}
-backpack.getItemDetail = func(x) {
-    if (is_string(x)) {
-        return(this.details[this.getItemID(x)]);
-    }
-    if (is_int(x)) {
-        return(this.details[x]);
-    }
-}
-backpack.chooseItem = func() {
-    if (size(this.items) == 0) {
         return(-1);
     }
-    clearscreen();
-    tmp := this.items;
-    for (i := 0; i < size(this.items); i += 1) {
-        tmp[i] += " x " + string(this.itemCount[i]);
+    backpack.getItemCount = func(x) {
+        return(if (tmp := this.getItemID(x) == -1) { 0 } else { this.itemCount[tmp] });
     }
-    push(tmp, "Cancel");
-    ret := showMenu("Choose an item", tmp);
-    mapRefresh();
-    if (ret == size(this.items)) {
-        return(-1);
+    backpack.getIDName = func(x) {
+        return(this.items[x]);
     }
-    return(ret);
+    backpack.getItemDetail = func(x) {
+        if (is_string(x)) {
+            return(this.details[this.getItemID(x)]);
+        }
+        if (is_int(x)) {
+            return(this.details[x]);
+        }
+    }
+    backpack.chooseItem = func() {
+        if (size(this.items) == 0) {
+            return(-1);
+        }
+        clearscreen();
+        tmp := this.items;
+        for (i := 0; i < size(this.items); i += 1) {
+            tmp[i] += " x " + string(this.itemCount[i]);
+        }
+        push(tmp, "Cancel");
+        ret := showMenu("Choose an item", tmp);
+        mapRefresh();
+        if (ret == size(this.items)) {
+            return(-1);
+        }
+        return(ret);
+    }
 }
