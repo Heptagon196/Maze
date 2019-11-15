@@ -1,9 +1,9 @@
 # Backpack module
 struct (backpack) {
-    backpack.items = list();
-    backpack.itemCount = list();
-    backpack.details = list();
-    backpack.addItem = func(x, cnt, detail) {
+    items = list();
+    itemCount = list();
+    details = list();
+    addItem = func(x, cnt, detail) {
         id := this.getItemID(x);
         if (id != -1) {
             this.itemCount[id] += cnt;
@@ -18,7 +18,7 @@ struct (backpack) {
         push(this.itemCount, cnt);
         push(this.details, detail);
     }
-    backpack.getItemID = func(x) {
+    getItemID = func(x) {
         for (i := 0; i < size(this.items); i += 1) {
             if (this.items[i] == x) {
                 return(i);
@@ -26,13 +26,13 @@ struct (backpack) {
         }
         return(-1);
     }
-    backpack.getItemCount = func(x) {
+    getItemCount = func(x) {
         return(if (tmp := this.getItemID(x) == -1) { 0 } else { this.itemCount[tmp] });
     }
-    backpack.getIDName = func(x) {
+    getIDName = func(x) {
         return(this.items[x]);
     }
-    backpack.getItemDetail = func(x) {
+    getItemDetail = func(x) {
         if (is_string(x)) {
             return(this.details[this.getItemID(x)]);
         }
@@ -40,7 +40,7 @@ struct (backpack) {
             return(this.details[x]);
         }
     }
-    backpack.chooseItem = func() {
+    chooseItem = func() {
         if (size(this.items) == 0) {
             return(-1);
         }
