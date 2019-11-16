@@ -4,55 +4,55 @@ struct (backpack) {
     itemCount = list();
     details = list();
     addItem = func(x, cnt, detail) {
-        id := this.getItemID(x);
+        id := getItemID(x);
         if (id != -1) {
-            this.itemCount[id] += cnt;
-            if (this.itemCount[id] == 0) {
-                remove(this.items, id);
-                remove(this.itemCount, id);
-                remove(this.details, id);
+            itemCount[id] += cnt;
+            if (itemCount[id] == 0) {
+                remove(items, id);
+                remove(itemCount, id);
+                remove(details, id);
             }
             return(0);
         }
-        push(this.items, x);
-        push(this.itemCount, cnt);
-        push(this.details, detail);
+        push(items, x);
+        push(itemCount, cnt);
+        push(details, detail);
     }
     getItemID = func(x) {
-        for (i := 0; i < size(this.items); i += 1) {
-            if (this.items[i] == x) {
+        for (i := 0; i < size(items); i += 1) {
+            if (items[i] == x) {
                 return(i);
             }
         }
         return(-1);
     }
     getItemCount = func(x) {
-        return(if (tmp := this.getItemID(x) == -1) { 0 } else { this.itemCount[tmp] });
+        return(if (tmp := getItemID(x) == -1) { 0 } else { itemCount[tmp] });
     }
     getIDName = func(x) {
-        return(this.items[x]);
+        return(items[x]);
     }
     getItemDetail = func(x) {
         if (is_string(x)) {
-            return(this.details[this.getItemID(x)]);
+            return(details[getItemID(x)]);
         }
         if (is_int(x)) {
-            return(this.details[x]);
+            return(details[x]);
         }
     }
     chooseItem = func() {
-        if (size(this.items) == 0) {
+        if (size(items) == 0) {
             return(-1);
         }
         clearscreen();
-        tmp := this.items;
-        for (i := 0; i < size(this.items); i += 1) {
-            tmp[i] += " x " + string(this.itemCount[i]);
+        tmp := items;
+        for (i := 0; i < size(items); i += 1) {
+            tmp[i] += " x " + string(itemCount[i]);
         }
         push(tmp, "Cancel");
         ret := showMenu("Choose an item", tmp);
         mapRefresh();
-        if (ret == size(this.items)) {
+        if (ret == size(items)) {
             return(-1);
         }
         return(ret);
