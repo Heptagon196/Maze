@@ -12,6 +12,27 @@ setKeyEvent("e", func() {
         say(bag.getItemDetail(i));
     }
 });
+# 执行命令
+setKeyEvent("/", func() {
+    gotoxy(1, 21);
+    s := "# Temp";
+    color(BLACK, WHITE);
+    showcursor();
+    print_to(".tmp.gos");
+    while (s != "") {
+        getline(s);
+        println(s);
+    }
+    println("return(0);")
+    print_to("/dev/stdout");
+    hidecursor();
+    exec(".tmp.gos");
+    if (LINUX) {
+        system("rm .tmp.gos");
+    } else {
+        system("del .tmp.gos");
+    }
+});
 StartGame(NormalWall);
 ##include maps/Default/events0.gos
 ##include maps/Default/events1.gos
