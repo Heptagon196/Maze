@@ -1,9 +1,9 @@
 # Backpack module
 struct (backpack) {
-    items = list();
-    itemCount = list();
-    details = list();
-    addItem = func(x, cnt, detail) {
+    items := list();
+    itemCount := list();
+    details := list();
+    addItem := func(x, cnt, detail) {
         id := getItemID(x);
         if (id != -1) {
             itemCount[id] += cnt;
@@ -18,7 +18,7 @@ struct (backpack) {
         push(itemCount, cnt);
         push(details, detail);
     }
-    getItemID = func(x) {
+    getItemID := func(x) {
         for (i := 0; i < size(items); i += 1) {
             if (items[i] == x) {
                 return(i);
@@ -26,13 +26,13 @@ struct (backpack) {
         }
         return(-1);
     }
-    getItemCount = func(x) {
+    getItemCount := func(x) {
         return(if (tmp := getItemID(x) == -1) { 0 } else { itemCount[tmp] });
     }
-    getIDName = func(x) {
+    getIDName := func(x) {
         return(items[x]);
     }
-    getItemDetail = func(x) {
+    getItemDetail := func(x) {
         if (is_string(x)) {
             return(details[getItemID(x)]);
         }
@@ -40,7 +40,7 @@ struct (backpack) {
             return(details[x]);
         }
     }
-    chooseItem = func() {
+    chooseItem := func() {
         if (size(items) == 0) {
             return(-1);
         }
