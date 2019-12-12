@@ -62,7 +62,7 @@ void showcursor() {
 }
 
 void color(int a, int b) {
-    printf("\033[%dm\033[%dm", b + 40, a + 30);
+    printf("\033[%dm\033[%dm", b + 10, a);
 }
 
 void clearcolor() {
@@ -79,7 +79,7 @@ void clearscreen() {
 
 void gotoxy(int x, int y) {
 	COORD c;
-	c.X = (2 * x - 1) - 1;
+	c.X = 2 * x - 2;
 	c.Y = y - 1;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c);
 }
@@ -111,49 +111,6 @@ void clearscreen() {
 double gettime() {
 	return (double)clock() / CLOCKS_PER_SEC;
 }
-
-std::string colorname(int x) {
-    switch (x) {
-        case BLACK:
-            return "black";
-        case BLUE:
-            return "blue";
-        case GREEN:
-            return "green";
-        case CYAN:
-            return "cyan";
-        case RED:
-            return "red";
-        case PURPLE:
-            return "purple";
-        case YELLOW:
-            return "yellow";
-        case WHITE:
-            return "white";
-    }
-    return "none";
-}
-
-int getcolor(std::string x) {
-    if (x=="black")
-        return BLACK;
-    if (x=="blue")
-        return BLUE;
-    if (x=="green")
-        return GREEN;
-    if (x=="cyan")
-        return CYAN;
-    if (x=="red")
-        return RED;
-    if (x=="purple")
-        return PURPLE;
-    if (x=="yellow")
-        return YELLOW;
-    if (x=="white")
-        return WHITE;
-    return -1;
-}
-
 
 int readkey(double limit_time)
 {
